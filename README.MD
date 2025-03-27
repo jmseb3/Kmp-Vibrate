@@ -2,6 +2,34 @@
 
 Kotlin Multiplatform utility library for vibrate📱!
 
+![Maven Central Version](https://img.shields.io/maven-central/v/io.github.jmseb3/vibrate)
+
+## How to Install
+
+In `lib.versions.toml`  include this dependency version catalog
+
+```toml
+[versions]
+vibrate = "1.0.0-beta01"
+
+[libraries]
+vibrate = { module = "io.github.jmseb3:vibrate", version.ref = "vibrate" }
+```
+
+```kotlin
+dependencies {
+    implementation(libs.vibrate)
+}
+```
+
+or In `build.gradle` of app module, include this dependency
+
+```gradle
+dependencies {
+    implementation("io.github.jmseb3:vibrate:1.0.0-beta01")
+}
+```
+
 ## How To Vibrate
 initialized `VibratorManager` per platform
 
