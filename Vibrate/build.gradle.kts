@@ -6,9 +6,6 @@ plugins {
     id("com.vanniktech.maven.publish") version "0.31.0-rc2"
 }
 
-group = "io.github.jmseb3"
-version = "1.0.0"
-
 kotlin {
     jvmToolchain(17)
 
