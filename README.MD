@@ -1,3 +1,5 @@
+![](./readmeAsset/header.png)
+
 # KMP Vibrate
 
 Kotlin Multiplatform utility library for vibrate📱!
@@ -17,7 +19,7 @@ vibrate = { module = "io.github.jmseb3:vibrate", version.ref = "vibrate" }
 ```
 
 ```kotlin
-dependencies {
+commonMain.dependencies {
     implementation(libs.vibrate)
 }
 ```
@@ -25,7 +27,7 @@ dependencies {
 or In `build.gradle` of app module, include this dependency
 
 ```gradle
-dependencies {
+commonMain.dependencies {
     implementation("io.github.jmseb3:vibrate:1.0.0-beta01")
 }
 ```
