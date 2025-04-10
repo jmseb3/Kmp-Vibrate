@@ -12,7 +12,7 @@ In `lib.versions.toml`  include this dependency version catalog
 
 ```toml
 [versions]
-vibrate = "1.0.0-beta01"
+vibrate = "1.0.0-beta02"
 
 [libraries]
 vibrate = { module = "io.github.jmseb3:vibrate", version.ref = "vibrate" }
@@ -28,14 +28,24 @@ or In `build.gradle` of app module, include this dependency
 
 ```gradle
 commonMain.dependencies {
-    implementation("io.github.jmseb3:vibrate:1.0.0-beta01")
+    implementation("io.github.jmseb3:vibrate:1.0.0-beta02")
 }
 ```
 
 ## How To Vibrate
 initialized `VibratorManager` per platform
 
-> Android need Context
+## Android Setting
+use `VibratorContextProvider.init` for provide context
+
+```kotlin
+class AppActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        ...
+        VibratorContextProvider.init(this@AppActivity)
+    }
+}
+```
 
 ### one Time
 
