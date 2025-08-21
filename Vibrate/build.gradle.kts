@@ -1,6 +1,5 @@
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
-import com.vanniktech.maven.publish.SonatypeHost
 
 plugins {
     alias(libs.plugins.multiplatform)
@@ -46,7 +45,7 @@ kotlin {
 
 android {
     namespace = "com.wonddak"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 21

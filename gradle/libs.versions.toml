@@ -1,11 +1,11 @@
 [versions]
 
-kotlin = "2.1.0"
-agp = "8.6.1"
-compose = "1.7.3"
+kotlin = "2.2.0"
+agp = "8.10.1"
+compose = "1.8.2"
 androidx-activityCompose = "1.9.3"
 dokka = "2.0.0"
-maven-publish = "0.31.0-rc2"
+maven-publish = "0.34.0"
 
 [libraries]
 
