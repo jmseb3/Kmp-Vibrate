@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+
 plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.compose.compiler)
@@ -20,6 +22,17 @@ kotlin {
         }
     }
 
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+        binaries.executable()
+    }
+
+    js {
+        browser()
+        binaries.executable()
+    }
+
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -32,6 +45,9 @@ kotlin {
             implementation(libs.androidx.activityCompose)
         }
 
+        jsMain.dependencies {
+            implementation(compose.html.core)
+        }
     }
 }
 
