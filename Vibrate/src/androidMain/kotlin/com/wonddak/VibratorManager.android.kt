@@ -10,11 +10,11 @@ import android.os.Vibrator
  * Vibrator Manager
  */
 @Suppress("DEPRECATION")
-actual class VibratorManager {
-    private val vibrator: Vibrator
+actual object VibratorManager {
 
-    init {
-        val context = VibratorContextProvider.getContext()
+    private lateinit var vibrator: Vibrator
+
+    fun initializer(context: Context): VibratorManager {
         vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val vibratorManager =
                 context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as android.os.VibratorManager
@@ -22,6 +22,7 @@ actual class VibratorManager {
         } else {
             context.getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
+        return VibratorManager
     }
 
     /**

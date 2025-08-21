@@ -18,7 +18,7 @@ import platform.Foundation.NSTimeInterval
 /**
  * Vibrator Manager
  */
-actual class VibratorManager {
+actual object VibratorManager {
 
     private var customHaptic = CustomHaptic()
 

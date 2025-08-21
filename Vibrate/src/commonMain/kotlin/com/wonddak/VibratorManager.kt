@@ -3,7 +3,7 @@ package com.wonddak
 /**
  * Vibrator Manager
  */
-expect class VibratorManager {
+expect object VibratorManager {
 
     /**
      * make vibrate for [time] second
