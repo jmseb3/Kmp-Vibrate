@@ -4,7 +4,7 @@ import kotlinx.browser.window
 
 actual object VibratorManager {
     private fun isVibrateSupported(): Boolean {
-        return if (window.asDynamic().navigator.vibrate == undefined) {
+        return if (window.navigator.asDynamic().vibrate == undefined) {
             console.warn("Vibration API is not supported in this browser.")
             false
         } else {
@@ -14,7 +14,7 @@ actual object VibratorManager {
 
     actual fun vibrate(time: Long) {
         if (isVibrateSupported()) {
-            window.asDynamic().navigator.vibrate(time)
+            window.navigator.vibrate(time)
         }
     }
 
@@ -22,15 +22,15 @@ actual object VibratorManager {
         if (isVibrateSupported()) {
             val convertTimings = timings.toMutableList()
             val delaySecond = convertTimings.removeFirst().toInt()
-            window.asDynamic().setTimeout({
-                window.asDynamic().navigator.vibrate(convertTimings.toTypedArray())
+            window.setTimeout({
+                window.navigator.vibrate(convertTimings.toTypedArray())
             }, delaySecond)
         }
     }
 
     actual fun stopVibrate() {
         if (isVibrateSupported()) {
-            window.asDynamic().navigator.vibrate(0)
+            window.navigator.vibrate(0)
         }
     }
 }

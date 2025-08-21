@@ -16,8 +16,7 @@ external interface Window {
 }
 
 external interface Navigator {
-    fun vibrate(time: JsNumber): Boolean
-    fun vibrate(times: JsArray<JsNumber>): Boolean
+    fun vibrate(time: JsAny): Boolean
 }
 
 private fun checkVibrateSupport(): String =
