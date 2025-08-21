@@ -56,7 +56,7 @@ actual object VibratorManager {
      *
      * - if \[300,500,700,500] > 0.3 delay > 0.5 vibrate > 0.7 delay . 0.5 vibrate
      */
-    actual fun vibratePattern(timings: LongArray) {
+    actual fun vibratePattern(timings: List<Long>) {
         try {
             val convertPattern = mutableListOf<CHHapticEvent>()
             var prevTime: Double? = null
@@ -66,7 +66,7 @@ actual object VibratorManager {
                     prevTime = if (prevTime == null) {
                         convertDuration
                     } else {
-                        prevTime!! + convertDuration
+                        prevTime + convertDuration
                     }
                 } else {
                     CHHapticEvent(
@@ -77,7 +77,7 @@ actual object VibratorManager {
                     ).also {
                         convertPattern.add(it)
                     }
-                    prevTime = prevTime!! + convertDuration
+                    prevTime = prevTime + convertDuration
                 }
             }
             customHaptic.playHaptic(convertPattern)
@@ -106,7 +106,7 @@ internal class CustomHaptic {
             resetEngine()
         }
         engine?.let { engine ->
-            engine?.stopWithCompletionHandler {
+            engine.stopWithCompletionHandler {
                 try {
                     val pattern = CHHapticPattern(
                         events = eventPattern,

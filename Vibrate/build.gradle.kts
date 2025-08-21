@@ -1,5 +1,6 @@
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.multiplatform)
@@ -16,6 +17,17 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+        binaries.executable()
+    }
+
+    js {
+        browser()
+        binaries.executable()
+    }
+
     sourceSets {
         commonMain.dependencies {
         }
@@ -29,6 +41,14 @@ kotlin {
         }
         androidMain.dependencies {
             implementation(libs.androidx.startup.runtime)
+        }
+
+        jsMain {
+
+        }
+
+        wasmJsMain {
+
         }
     }
 
@@ -68,6 +88,12 @@ dokka {
         }
         named("iosMain") {
             displayName.set("iOS")
+        }
+        named("jsMain") {
+            displayName.set("js")
+        }
+        named("wasmJsMain") {
+            displayName.set("wasm")
         }
     }
 }

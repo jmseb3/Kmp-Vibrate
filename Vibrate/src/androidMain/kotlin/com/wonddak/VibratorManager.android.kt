@@ -45,12 +45,13 @@ actual object VibratorManager {
      *
      * - if \[300,500,700,500] > 0.3 delay > 0.5 vibrate > 0.7 delay . 0.5 vibrate
      */
-    actual fun vibratePattern(timings: LongArray) {
+    actual fun vibratePattern(timings: List<Long>) {
         val repeat = -1
+        val convertArray = timings.toLongArray()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createWaveform(timings, repeat))
+            vibrator.vibrate(VibrationEffect.createWaveform(convertArray, repeat))
         } else {
-            vibrator.vibrate(timings, repeat)
+            vibrator.vibrate(convertArray, repeat)
         }
     }
 
