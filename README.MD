@@ -32,6 +32,36 @@ commonMain.dependencies {
 }
 ```
 
+<details>
+<summary>How To Test sample?</summary>
+
+### Android
+
+To run the application on android device/emulator:
+
+- open project in Android Studio and run imported android run configuration
+
+### Desktop
+
+Run the desktop application: `./gradlew :sample:composeApp:run`
+
+### iOS
+
+To run the application on iPhone device/simulator:
+
+- Open `iosApp/iosApp.xcproject` in Xcode and run standard configuration
+
+### JS Browser
+
+Run the browser application: `./gradlew :sample:composeApp:jsBrowserDevelopmentRun --continue`
+
+### Wasm Browser
+
+Run the browser application: `./gradlew :sample:composeApp:wasmJsBrowserDevelopmentRun --continue`
+</details>
+
+---
+
 ## How To Use Vibrate
 use `VibratorManager` 
 
