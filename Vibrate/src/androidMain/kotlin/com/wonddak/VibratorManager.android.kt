@@ -10,11 +10,11 @@ import android.os.Vibrator
  * Vibrator Manager
  */
 @Suppress("DEPRECATION")
-actual class VibratorManager {
-    private val vibrator: Vibrator
+actual object VibratorManager {
 
-    init {
-        val context = VibratorContextProvider.getContext()
+    private lateinit var vibrator: Vibrator
+
+    fun initializer(context: Context): VibratorManager {
         vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val vibratorManager =
                 context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as android.os.VibratorManager
@@ -22,6 +22,7 @@ actual class VibratorManager {
         } else {
             context.getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
+        return VibratorManager
     }
 
     /**
@@ -44,12 +45,13 @@ actual class VibratorManager {
      *
      * - if \[300,500,700,500] > 0.3 delay > 0.5 vibrate > 0.7 delay . 0.5 vibrate
      */
-    actual fun vibratePattern(timings: LongArray) {
+    actual fun vibratePattern(timings: List<Long>) {
         val repeat = -1
+        val convertArray = timings.toLongArray()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createWaveform(timings, repeat))
+            vibrator.vibrate(VibrationEffect.createWaveform(convertArray, repeat))
         } else {
-            vibrator.vibrate(timings, repeat)
+            vibrator.vibrate(convertArray, repeat)
         }
     }
 
