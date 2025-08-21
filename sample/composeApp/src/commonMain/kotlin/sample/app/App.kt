@@ -48,9 +48,7 @@ import com.wonddak.VibratorManager
 import com.wonddak.vibrateSecond
 
 @Composable
-fun App(
-    vibratorManager: VibratorManager
-) {
+fun App() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -59,13 +57,13 @@ fun App(
             .safeContentPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        singleVibrate(vibratorManager)
+        singleVibrate()
         HorizontalDivider()
-        TimingVibrate(vibratorManager)
+        TimingVibrate()
         HorizontalDivider()
         Button(
             onClick = {
-                vibratorManager.stopVibrate()
+                VibratorManager.stopVibrate()
             }
         ) {
             Text("STOP")
@@ -74,9 +72,7 @@ fun App(
 }
 
 @Composable
-fun singleVibrate(
-    vibratorManager: VibratorManager
-) {
+fun singleVibrate() {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
@@ -118,7 +114,7 @@ fun singleVibrate(
         }
         Button(
             onClick = {
-                vibratorManager.vibrateSecond(second)
+                VibratorManager.vibrateSecond(second)
             }
         ) {
             Text("${second}Sec Vibrate")
@@ -128,19 +124,19 @@ fun singleVibrate(
 
 
 @Composable
-fun TimingVibrate(
-    vibratorManager: VibratorManager
-) {
+fun TimingVibrate() {
     Column(
         modifier = Modifier.fillMaxWidth(),
     ) {
         var timing by remember {
-            mutableStateOf(mutableListOf<Long>(
-                100,
-                500,
-                100,
-                500
-            ))
+            mutableStateOf(
+                mutableListOf<Long>(
+                    100,
+                    500,
+                    100,
+                    500
+                )
+            )
         }
         val enableButton by remember {
             derivedStateOf {
@@ -180,7 +176,7 @@ fun TimingVibrate(
                             timing = temp
                         }
                     ) {
-                        Icon(Icons.Filled.Clear,null)
+                        Icon(Icons.Filled.Clear, null)
                     }
                 }
             }
@@ -216,7 +212,7 @@ fun TimingVibrate(
         )
         Button(
             onClick = {
-                vibratorManager.vibratePattern(timing.toLongArray())
+                VibratorManager.vibratePattern(timing.toLongArray())
             },
             enabled = enableButton
         ) {
