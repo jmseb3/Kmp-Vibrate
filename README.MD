@@ -32,20 +32,8 @@ commonMain.dependencies {
 }
 ```
 
-## How To Vibrate
-initialized `VibratorManager` per platform
-
-## Android Setting
-use `VibratorContextProvider.init` for provide context
-
-```kotlin
-class AppActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        ...
-        VibratorContextProvider.init(this@AppActivity)
-    }
-}
-```
+## How To Use Vibrate
+use `VibratorManager` 
 
 ### one Time
 
