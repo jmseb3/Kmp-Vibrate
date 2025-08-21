@@ -99,6 +99,8 @@ dokka {
 }
 
 mavenPublishing {
+    publishToMavenCentral()
+    signAllPublications()
     configure(
         KotlinMultiplatform(
             javadocJar = JavadocJar.Dokka("dokkaGeneratePublicationHtml"),
