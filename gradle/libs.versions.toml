@@ -6,10 +6,12 @@ compose = "1.8.2"
 androidx-activityCompose = "1.9.3"
 dokka = "2.0.0"
 maven-publish = "0.34.0"
+startupRuntime = "1.2.0"
 
 [libraries]
 
 androidx-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+androidx-startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "startupRuntime" }
 
 [plugins]
 
