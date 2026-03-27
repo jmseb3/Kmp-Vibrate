@@ -1,4 +1,5 @@
 package sample.app
+
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -6,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -28,52 +28,62 @@ import com.wonddak.VibratorManager
 import com.wonddak.vibrateSecond
 
 @Composable
-fun singleVibrate() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+fun singleVibrate(enabled: Boolean) {
+    SampleSection(
+        title = "Single vibrate",
+        subtitle = "Pick a duration in seconds and trigger a one-shot vibration."
     ) {
         var second by remember {
             mutableIntStateOf(3)
         }
         Row(
-            modifier = Modifier.padding(5.dp)
-                .border(1.dp, Color.Black, RoundedCornerShape(5.dp)),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(5.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            IconButton(
-                onClick = {
-                    second -= 1
-                },
-                enabled = second > 1
-            ) {
-                Icon(Icons.Filled.Remove, null)
-            }
-            Box(
+            Row(
                 modifier = Modifier
-                    .size(40.dp)
-                    .border(1.dp, Color.Black, CircleShape)
+                    .padding(end = 8.dp)
+                    .border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(14.dp))
+                    .padding(horizontal = 6.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                Text(
-                    text = second.toString(),
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-            IconButton(
-                onClick = {
-                    second += 1
+                IconButton(
+                    onClick = {
+                        second -= 1
+                    },
+                    enabled = second > 1
+                ) {
+                    Icon(Icons.Filled.Remove, null)
                 }
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .border(1.dp, Color(0xFFBDBDBD), RoundedCornerShape(12.dp))
+                ) {
+                    Text(
+                        text = second.toString(),
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        second += 1
+                    }
+                ) {
+                    Icon(Icons.Filled.Add, null)
+                }
+            }
+
+            Button(
+                onClick = {
+                    VibratorManager.vibrateSecond(second)
+                },
+                enabled = enabled
             ) {
-                Icon(Icons.Filled.Add, null)
+                Text("${second}s Vibrate")
             }
-        }
-        Button(
-            onClick = {
-                VibratorManager.vibrateSecond(second)
-            }
-        ) {
-            Text("${second}Sec Vibrate")
         }
     }
 }

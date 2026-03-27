@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,24 +19,45 @@ import com.wonddak.VibratorManager
 
 @Composable
 fun App() {
+    val supported = VibratorManager.isSupported()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
-            .padding(10.dp)
+            .background(Color(0xFFF7F7F5))
+            .padding(16.dp)
             .safeContentPadding()
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        singleVibrate()
-        HorizontalDivider()
-        TimingVibrate()
-        HorizontalDivider()
+        Text(
+            text = "KMP Vibrate",
+            style = androidx.compose.material3.MaterialTheme.typography.headlineMedium
+        )
+        Text(
+            text = "A shared demo for one-shot vibration, custom patterns, and presets.",
+            style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+            color = Color(0xFF666666)
+        )
+
+        SampleSection(
+            title = "Device support",
+            subtitle = "This status comes from `VibratorManager.isSupported()`."
+        ) {
+            SupportBanner(supported = supported)
+        }
+
+        VibrationPresetSection(enabled = supported)
+        singleVibrate(enabled = supported)
+        TimingVibrate(enabled = supported)
+
         Button(
+            modifier = Modifier.padding(top = 4.dp),
             onClick = {
                 VibratorManager.stopVibrate()
-            }
+            },
+            enabled = supported
         ) {
             Text("STOP")
         }

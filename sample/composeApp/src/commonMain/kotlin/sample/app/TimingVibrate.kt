@@ -35,9 +35,10 @@ import com.wonddak.model.VibratePattern
 import com.wonddak.vibratePattern
 
 @Composable
-fun TimingVibrate() {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
+fun TimingVibrate(enabled: Boolean) {
+    SampleSection(
+        title = "Custom pattern",
+        subtitle = "Pattern items are entered in milliseconds: delay first, then vibrate."
     ) {
         var timing by remember {
             mutableStateOf(
@@ -53,28 +54,27 @@ fun TimingVibrate() {
             }
         }
         LazyColumn(
-            modifier = Modifier.height(200.dp)
-                .padding(5.dp)
-                .border(1.dp, Color.Black, RoundedCornerShape(5.dp))
+            modifier = Modifier
+                .height(220.dp)
+                .border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(14.dp))
+                .padding(vertical = 4.dp)
         ) {
             itemsIndexed(
                 items = timing
             ) { index, item ->
                 Row(
                     modifier = Modifier.fillMaxWidth()
-                        .padding(horizontal = 10.dp),
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(
                         modifier = Modifier,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         listOf(
-                            "Delay",
-                            item.delay.toString(),
-                            "Vibrate",
-                            item.vibrate.toString()
+                            "Delay ${item.delay.asMillisecondsLabel()}",
+                            "Vibrate ${item.vibrate.asMillisecondsLabel()}"
                         ).forEach { title ->
                             Text(
                                 title
@@ -93,6 +93,10 @@ fun TimingVibrate() {
                 }
             }
         }
+        Text(
+            text = "Use milliseconds for finer control.",
+            color = Color(0xFF666666)
+        )
         var delay by remember {
             mutableStateOf("")
         }
@@ -107,7 +111,7 @@ fun TimingVibrate() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Add Vibrate Pattern")
+            Text("Add pattern item")
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -127,7 +131,7 @@ fun TimingVibrate() {
                         }
                     },
                     placeholder = {
-                        Text("Delay Second")
+                        Text("Delay (ms)")
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
@@ -149,7 +153,7 @@ fun TimingVibrate() {
                         }
                     },
                     placeholder = {
-                        Text("Vibrate Second")
+                        Text("Vibrate (ms)")
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
@@ -176,7 +180,7 @@ fun TimingVibrate() {
             onClick = {
                 VibratorManager.vibratePattern(timing)
             },
-            enabled = enableVibrateButton
+            enabled = enableVibrateButton && enabled
         ) {
             Text("Vibrate Pattern")
         }
