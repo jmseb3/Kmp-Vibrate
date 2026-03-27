@@ -12,7 +12,7 @@ In `lib.versions.toml`  include this dependency version catalog
 
 ```toml
 [versions]
-vibrate = "1.0.0"
+vibrate = "1.1.0-beta01"
 
 [libraries]
 vibrate = { module = "io.github.jmseb3:vibrate", version.ref = "vibrate" }
@@ -28,7 +28,7 @@ or In `build.gradle` of app module, include this dependency
 
 ```gradle
 commonMain.dependencies {
-    implementation("io.github.jmseb3:vibrate:1.0.0")
+    implementation("io.github.jmseb3:vibrate:1.1.0-beta01")
 }
 ```
 
@@ -60,6 +60,22 @@ VibratorManager.vibrate(3000)
 ```
 
 `3000` means 3 seconds.
+
+### Strength
+
+```kotlin
+VibratorManager.vibrate(3000, strength = 0.5f)
+VibratorManager.vibrate(
+    VibrationPreset.Success,
+    strength = 0.8f
+)
+```
+
+`strength` uses a normalized `0f..1f` range.
+
+- Android maps it to vibration amplitude.
+- iOS maps it to Core Haptics intensity.
+- JS/Wasm currently ignore it because the browser vibration API only supports timing patterns.
 
 ### Pattern
 
