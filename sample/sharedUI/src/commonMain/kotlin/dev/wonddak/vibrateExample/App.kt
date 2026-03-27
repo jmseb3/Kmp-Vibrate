@@ -20,6 +20,7 @@ import com.wonddak.VibratorManager
 
 @Composable
 fun App() {
+    // Drive the entire sample from one support check so every section stays in sync per platform.
     val supported = VibratorManager.isSupported()
 
     Column(

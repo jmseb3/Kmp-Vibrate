@@ -40,6 +40,7 @@ fun TimingVibrate(enabled: Boolean) {
         title = "Custom pattern",
         subtitle = "Pattern items are entered in milliseconds: delay first, then vibrate."
     ) {
+        // Keep user edits as typed delay/vibrate pairs; the library flattens them right before play.
         var timing by remember {
             mutableStateOf(
                 mutableListOf<VibratePattern>(
@@ -83,6 +84,7 @@ fun TimingVibrate(enabled: Boolean) {
                     }
                     IconButton(
                         onClick = {
+                            // Replace the list instance so Compose observes the change.
                             val temp = timing.toMutableList()
                             temp.removeAt(index)
                             timing = temp
@@ -123,6 +125,7 @@ fun TimingVibrate(enabled: Boolean) {
                         if (text.isEmpty()) {
                             delay = text
                         } else {
+                            // Reject non-numeric text early so the add action always produces valid timings.
                             runCatching {
                                 text.toLong()
                             }.onSuccess {
@@ -145,6 +148,7 @@ fun TimingVibrate(enabled: Boolean) {
                         if (text.isEmpty()) {
                             vibrate = text
                         } else {
+                            // Reject non-numeric text early so the add action always produces valid timings.
                             runCatching {
                                 text.toLong()
                             }.onSuccess {
@@ -163,6 +167,7 @@ fun TimingVibrate(enabled: Boolean) {
             }
             Button(
                 onClick = {
+                    // Replace the list instance so Compose observes the appended pattern item.
                     val temp = timing.toMutableList()
                     temp.add(
                         VibratePattern(delay.toLong(), vibrate.toLong())

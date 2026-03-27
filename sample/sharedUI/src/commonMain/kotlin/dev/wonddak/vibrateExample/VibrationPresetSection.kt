@@ -21,6 +21,7 @@ fun VibrationPresetSection(
         subtitle = "Try the built-in patterns and compare how each target behaves."
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            // Reading the enum directly keeps the sample list aligned with the library presets.
             VibrationPreset.entries.forEach { preset ->
                 Button(
                     modifier = Modifier.fillMaxWidth(),

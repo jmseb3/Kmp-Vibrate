@@ -10,6 +10,7 @@ import platform.CoreHaptics.CHHapticEngineStoppedReasonIdleTimeout
 import platform.CoreHaptics.CHHapticEngineStoppedReasonSystemError
 import platform.CoreHaptics.CHHapticEvent
 import platform.CoreHaptics.CHHapticEventParameter
+import platform.CoreHaptics.CHHapticEventParameterIDHapticIntensity
 import platform.CoreHaptics.CHHapticEventTypeHapticContinuous
 import platform.CoreHaptics.CHHapticPattern
 import platform.Foundation.NSTimeInterval
@@ -22,6 +23,7 @@ actual object VibratorManager {
 
     private var customHaptic = CustomHaptic()
 
+    // Core Haptics works in seconds, while the shared API keeps timing values in milliseconds.
     private fun Long.toIosDuration(): NSTimeInterval {
         return this.toDouble() / 1000
     }
@@ -38,7 +40,12 @@ actual object VibratorManager {
      * - 3000 = 3Sec
      */
     actual fun vibrate(time: Long) {
+        vibrate(time, 1f)
+    }
+
+    actual fun vibrate(time: Long, strength: Float) {
         val safeDuration = normalizeDurationMillis(time) ?: return
+        val eventParameters = strength.toIosEventParameters() ?: return
         if (!isSupported()) {
             return
         }
@@ -47,7 +54,7 @@ actual object VibratorManager {
                 listOf(
                     CHHapticEvent(
                         eventType = CHHapticEventTypeHapticContinuous,
-                        parameters = emptyList<CHHapticEventParameter>(),
+                        parameters = eventParameters,
                         relativeTime = 0.0,
                         duration = safeDuration.toIosDuration()
                     )
@@ -67,17 +74,23 @@ actual object VibratorManager {
      * - if \[300,500,700,500] > 0.3 delay > 0.5 vibrate > 0.7 delay . 0.5 vibrate
      */
     actual fun vibratePattern(timings: List<Long>) {
+        vibratePattern(timings, 1f)
+    }
+
+    actual fun vibratePattern(timings: List<Long>, strength: Float) {
         if (!isSupported()) {
             return
         }
 
         val normalizedTimings = normalizePatternTimings(timings)?.toList() ?: return
+        val eventParameters = strength.toIosEventParameters() ?: return
         try {
             val convertPattern = mutableListOf<CHHapticEvent>()
             var prevTime: Double? = null
             normalizedTimings.forEachIndexed { index, time ->
                 val convertDuration = time.toIosDuration()
                 if (index % 2 == 0) {
+                    // The common API models patterns as delay/vibrate pairs, so we accumulate delays into relativeTime.
                     prevTime = if (prevTime == null) {
                         convertDuration
                     } else {
@@ -86,7 +99,8 @@ actual object VibratorManager {
                 } else {
                     CHHapticEvent(
                         eventType = CHHapticEventTypeHapticContinuous,
-                        parameters = emptyList<CHHapticEventParameter>(),
+                        // Reuse one normalized intensity value for every haptic segment in the pattern.
+                        parameters = eventParameters,
                         relativeTime = prevTime!!,
                         duration = convertDuration
                     ).also {
@@ -109,6 +123,17 @@ actual object VibratorManager {
     }
 }
 
+private fun Float.toIosEventParameters(): List<CHHapticEventParameter>? {
+    val normalizedStrength = normalizeStrength(this) ?: return null
+    return listOf(
+        // Core Haptics exposes intensity as a normalized floating-point value.
+        CHHapticEventParameter(
+            parameterID = CHHapticEventParameterIDHapticIntensity,
+            value = normalizedStrength
+        )
+    )
+}
+
 internal class CustomHaptic {
     private var engine: CHHapticEngine? = null
 
@@ -121,6 +146,7 @@ internal class CustomHaptic {
             resetEngine()
         }
         engine?.let { engine ->
+            // Stopping first makes a new request replace the previous pattern instead of overlapping it.
             engine.stopWithCompletionHandler {
                 try {
                     val pattern = CHHapticPattern(
@@ -153,6 +179,7 @@ internal class CustomHaptic {
     @OptIn(ExperimentalForeignApi::class)
     private fun resetEngine() {
         try {
+            // iOS may stop or discard the engine after interruptions, so it is recreated lazily.
             engine = CHHapticEngine(null, null)
             engine?.setStoppedHandler { reason ->
                 when (reason) {

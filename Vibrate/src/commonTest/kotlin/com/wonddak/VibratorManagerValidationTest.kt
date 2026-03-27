@@ -31,6 +31,15 @@ class VibratorManagerValidationTest {
     }
 
     @Test
+    fun normalizeStrengthClampsAndRejectsInvalidValues() {
+        // Shared validation keeps Android/iOS mappings safe while Web simply ignores strength.
+        assertNull(normalizeStrength(Float.NaN))
+        assertNull(normalizeStrength(0f))
+        assertEquals(0.25f, normalizeStrength(0.25f))
+        assertEquals(1f, normalizeStrength(3f))
+    }
+
+    @Test
     fun flattenPatternTimingsConvertsTypedPatterns() {
         val timings = flattenPatternTimings(
             listOf(

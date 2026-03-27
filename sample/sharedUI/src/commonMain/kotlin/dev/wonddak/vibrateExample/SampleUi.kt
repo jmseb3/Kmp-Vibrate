@@ -58,6 +58,7 @@ fun SampleSection(
 
 @Composable
 fun SupportBanner(supported: Boolean) {
+    // This mirrors VibratorManager.isSupported(), so it reflects target capability rather than user settings.
     val backgroundColor = if (supported) Color(0xFFEAF7EE) else Color(0xFFFDECEC)
     val accentColor = if (supported) Color(0xFF1E8E3E) else Color(0xFFC62828)
     val statusText = if (supported) "Supported" else "Unsupported"
@@ -97,4 +98,3 @@ fun SupportBanner(supported: Boolean) {
 }
 
 fun Long.asMillisecondsLabel(): String = "$this ms"
-
