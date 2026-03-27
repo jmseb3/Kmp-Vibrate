@@ -26,20 +26,30 @@ actual object VibratorManager {
         return this.toDouble() / 1000
     }
 
+    actual fun isSupported(): Boolean {
+        return runCatching {
+            CHHapticEngine.capabilitiesForHardware().supportsHaptics
+        }.getOrDefault(false)
+    }
+
     /**
      * make vibrate for [time] second
      *
      * - 3000 = 3Sec
      */
     actual fun vibrate(time: Long) {
+        val safeDuration = normalizeDurationMillis(time) ?: return
+        if (!isSupported()) {
+            return
+        }
         try {
             customHaptic.playHaptic(
                 listOf(
                     CHHapticEvent(
                         eventType = CHHapticEventTypeHapticContinuous,
                         parameters = emptyList<CHHapticEventParameter>(),
-                        relativeTime = 0.1,
-                        duration = time.toIosDuration()
+                        relativeTime = 0.0,
+                        duration = safeDuration.toIosDuration()
                     )
                 )
             )
@@ -57,10 +67,15 @@ actual object VibratorManager {
      * - if \[300,500,700,500] > 0.3 delay > 0.5 vibrate > 0.7 delay . 0.5 vibrate
      */
     actual fun vibratePattern(timings: List<Long>) {
+        if (!isSupported()) {
+            return
+        }
+
+        val normalizedTimings = normalizePatternTimings(timings)?.toList() ?: return
         try {
             val convertPattern = mutableListOf<CHHapticEvent>()
             var prevTime: Double? = null
-            timings.forEachIndexed { index, time ->
+            normalizedTimings.forEachIndexed { index, time ->
                 val convertDuration = time.toIosDuration()
                 if (index % 2 == 0) {
                     prevTime = if (prevTime == null) {

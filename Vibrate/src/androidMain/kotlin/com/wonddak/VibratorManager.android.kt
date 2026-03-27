@@ -14,6 +14,13 @@ actual object VibratorManager {
 
     private lateinit var vibrator: Vibrator
 
+    private fun vibratorOrNull(): Vibrator? {
+        if (!::vibrator.isInitialized) {
+            return null
+        }
+        return vibrator.takeIf { it.hasVibrator() }
+    }
+
     fun initializer(context: Context): VibratorManager {
         vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val vibratorManager =
@@ -25,16 +32,24 @@ actual object VibratorManager {
         return VibratorManager
     }
 
+    actual fun isSupported(): Boolean {
+        return vibratorOrNull() != null
+    }
+
     /**
      * make vibrate for [time] second
      *
      * - 3000 = 3Sec
      */
     actual fun vibrate(time: Long) {
+        val safeDuration = normalizeDurationMillis(time) ?: return
+        val currentVibrator = vibratorOrNull() ?: return
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(time, 100))
+            currentVibrator.vibrate(
+                VibrationEffect.createOneShot(safeDuration, VibrationEffect.DEFAULT_AMPLITUDE)
+            )
         } else {
-            vibrator.vibrate(time)
+            currentVibrator.vibrate(safeDuration)
         }
     }
 
@@ -46,12 +61,13 @@ actual object VibratorManager {
      * - if \[300,500,700,500] > 0.3 delay > 0.5 vibrate > 0.7 delay . 0.5 vibrate
      */
     actual fun vibratePattern(timings: List<Long>) {
+        val currentVibrator = vibratorOrNull() ?: return
+        val convertArray = normalizePatternTimings(timings) ?: return
         val repeat = -1
-        val convertArray = timings.toLongArray()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createWaveform(convertArray, repeat))
+            currentVibrator.vibrate(VibrationEffect.createWaveform(convertArray, repeat))
         } else {
-            vibrator.vibrate(convertArray, repeat)
+            currentVibrator.vibrate(convertArray, repeat)
         }
     }
 
@@ -59,7 +75,7 @@ actual object VibratorManager {
      * stop Vibrate if running
      */
     actual fun stopVibrate() {
-        vibrator.cancel()
+        vibratorOrNull()?.cancel()
     }
 
 }

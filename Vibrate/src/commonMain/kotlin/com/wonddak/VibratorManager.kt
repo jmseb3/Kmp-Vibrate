@@ -8,6 +8,11 @@ import com.wonddak.model.VibratePattern
 expect object VibratorManager {
 
     /**
+     * returns true when the current platform can execute vibration or haptic feedback.
+     */
+    fun isSupported(): Boolean
+
+    /**
      * make vibrate for [time] second
      *
      * - 3000 = 3 Second
@@ -42,5 +47,37 @@ fun VibratorManager.vibrateSecond(second: Int) = vibrate(
  * @param[timings] [VibratePattern] to [LongArray] and run [VibratorManager.vibratePattern]
  */
 fun VibratorManager.vibratePattern(timings: List<VibratePattern>) = vibratePattern(
-    timings.flatMap { listOf(it.delay, it.vibrate) }
+    flattenPatternTimings(timings)
 )
+
+/**
+ * extension func for common presets
+ */
+fun VibratorManager.vibrate(preset: VibrationPreset) = vibratePattern(
+    preset.patterns
+)
+
+internal fun normalizeDurationMillis(durationMillis: Long): Long? {
+    return durationMillis.takeIf { it > 0L }
+}
+
+internal fun flattenPatternTimings(patterns: List<VibratePattern>): List<Long> {
+    return patterns.flatMap { listOf(it.delay, it.vibrate) }
+}
+
+internal fun normalizePatternTimings(timings: List<Long>): LongArray? {
+    if (timings.isEmpty() || timings.size % 2 != 0) {
+        return null
+    }
+
+    timings.forEachIndexed { index, time ->
+        if (time < 0L) {
+            return null
+        }
+        if (index % 2 == 1 && time == 0L) {
+            return null
+        }
+    }
+
+    return timings.toLongArray()
+}
