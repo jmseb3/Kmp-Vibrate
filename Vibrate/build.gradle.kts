@@ -1,18 +1,24 @@
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.multiplatform)
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.maven)
     alias(libs.plugins.dokka)
 }
 
 kotlin {
-    jvmToolchain(17)
+    androidLibrary {
+        namespace = "com.wonddak"
+        compileSdk = 36
+        minSdk = 23
+        androidResources.enable = true
+        compilerOptions { jvmTarget.set(JvmTarget.JVM_17) }
 
-    androidTarget { publishLibraryVariants("release") }
+    }
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -20,12 +26,10 @@ kotlin {
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser()
-        binaries.executable()
     }
 
     js {
         browser()
-        binaries.executable()
     }
 
     sourceSets {
@@ -61,15 +65,6 @@ kotlin {
         }
     }
 
-}
-
-android {
-    namespace = "com.wonddak"
-    compileSdk = 36
-
-    defaultConfig {
-        minSdk = 21
-    }
 }
 
 dokka {
