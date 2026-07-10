@@ -1,3 +1,5 @@
+@file:OptIn(kotlin.js.ExperimentalWasmJsInterop::class)
+
 package com.wonddak
 
 @JsName("window")
@@ -12,7 +14,8 @@ external interface Console {
 
 external interface Window {
     val navigator: Navigator
-    fun setTimeout(callback: () -> Unit, delay: Int)
+    fun setTimeout(callback: () -> Unit, delay: Int): Int
+    fun clearTimeout(handle: Int)
 }
 
 external interface Navigator {
@@ -20,49 +23,69 @@ external interface Navigator {
 }
 
 private fun checkVibrateSupport(): String =
-    js("typeof window.navigator.vibrate === 'function'")
+    js("String(typeof window !== 'undefined' && typeof window.navigator !== 'undefined' && typeof window.navigator.vibrate === 'function')")
 
 actual object VibratorManager {
 
-    private fun isVibrateSupported(): Boolean {
-        return if (checkVibrateSupport() == "true") {
-            console.warn("Vibration API is not supported in this browser.")
-            false
-        } else {
-            true
-        }
+    private var pendingTimeoutId: Int? = null
+
+    // Keep the timeout handle so stop requests can cancel a delayed pattern before it starts.
+    private fun clearPendingPattern() {
+        pendingTimeoutId?.let(window::clearTimeout)
+        pendingTimeoutId = null
+    }
+
+    actual fun isSupported(): Boolean {
+        return checkVibrateSupport() == "true"
     }
 
     actual fun vibrate(time: Long) {
-        if (isVibrateSupported()) {
-            window.navigator.vibrate(time.toInt().toJsNumber())
+        val safeDuration = normalizeDurationMillis(time) ?: return
+        if (isSupported()) {
+            clearPendingPattern()
+            window.navigator.vibrate(safeDuration.toInt().toJsNumber())
         }
+    }
+
+    actual fun vibrate(time: Long, strength: Float) {
+        // The Web Vibration API does not expose amplitude, so strength is intentionally ignored.
+        vibrate(time)
     }
 
     actual fun vibratePattern(timings: List<Long>) {
-        if (isVibrateSupported()) {
-            val convertTimings = timings.toMutableList()
-            if (convertTimings.isEmpty()) return
-
-            val delayFirst = convertTimings.removeFirst().toInt()
-            window.setTimeout({
-                if (convertTimings.isNotEmpty()) {
-                    val patternArray = JsArray<JsNumber>()
-
-                    // Convert and add each Long to the JsArray
-                    for (i in 0 until convertTimings.size) {
-                        // The index operator internally calls a setter
-                        patternArray[i] = convertTimings[i].toInt().toJsNumber()
-                    }
-
-                    window.navigator.vibrate(patternArray)
-                }
-            }, delayFirst)
+        if (!isSupported()) {
+            return
         }
+
+        val convertTimings = normalizePatternTimings(timings)?.toMutableList() ?: return
+        clearPendingPattern()
+
+        // navigator.vibrate starts with "vibrate now", so an initial delay must be scheduled manually.
+        val delayFirst = convertTimings.removeFirst().toInt()
+        val patternArray = JsArray<JsNumber>()
+        for (i in 0 until convertTimings.size) {
+            patternArray[i] = convertTimings[i].toInt().toJsNumber()
+        }
+
+        if (delayFirst == 0) {
+            window.navigator.vibrate(patternArray)
+            return
+        }
+
+        pendingTimeoutId = window.setTimeout({
+            pendingTimeoutId = null
+            window.navigator.vibrate(patternArray)
+        }, delayFirst)
+    }
+
+    actual fun vibratePattern(timings: List<Long>, strength: Float) {
+        // The Web Vibration API does not expose amplitude, so strength is intentionally ignored.
+        vibratePattern(timings)
     }
 
     actual fun stopVibrate() {
-        if (isVibrateSupported()) {
+        clearPendingPattern()
+        if (isSupported()) {
             window.navigator.vibrate(0.toJsNumber())
         }
     }

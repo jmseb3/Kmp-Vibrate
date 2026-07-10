@@ -12,7 +12,7 @@ In `lib.versions.toml`  include this dependency version catalog
 
 ```toml
 [versions]
-vibrate = "1.0.0"
+vibrate = "1.1.0"
 
 [libraries]
 vibrate = { module = "io.github.jmseb3:vibrate", version.ref = "vibrate" }
@@ -28,55 +28,111 @@ or In `build.gradle` of app module, include this dependency
 
 ```gradle
 commonMain.dependencies {
-    implementation("io.github.jmseb3:vibrate:1.0.0")
+    implementation("io.github.jmseb3:vibrate:1.1.0")
 }
 ```
 
-<details>
-<summary>How To Test sample?</summary>
+## Sample App
 
-### Android
+Example app source lives in [`sample/`](sample).
 
-To run the application on android device/emulator:
-
-- open project in Android Studio and run imported android run configuration
-
-### iOS
-
-To run the application on iPhone device/simulator:
-
-- Open `iosApp/iosApp.xcproject` in Xcode and run standard configuration
-
-### JS Browser
-
-Run the browser application: `./gradlew :sample:composeApp:jsBrowserDevelopmentRun --continue`
-
-### Wasm Browser
-
-Run the browser application: `./gradlew :sample:composeApp:wasmJsBrowserDevelopmentRun --continue`
-</details>
-
----
+- JS browser: `./gradlew :sample:webApp:jsBrowserDevelopmentRun --continue`
+- WASM browser: `./gradlew :sample:webApp:wasmJsBrowserDevelopmentRun --continue`
+- Android: run `sample:androidApp` from Android Studio
+- iOS: open `sample/iosApp/iosApp.xcodeproj` in Xcode and run
 
 ## How To Use Vibrate
-use `VibratorManager` 
 
-### one Time
+All durations are in milliseconds.
 
-use `VibratorManager.vibrate(time:Long)`
+### Check Support
 
-if time 3000 = 3 Second
+```kotlin
+if (VibratorManager.isSupported()) {
+    VibratorManager.vibrate(300)
+}
+```
+
+### One Time
+
+```kotlin
+VibratorManager.vibrate(3000)
+```
+
+`3000` means 3 seconds.
+
+### Strength
+
+```kotlin
+VibratorManager.vibrate(3000, strength = 0.5f)
+VibratorManager.vibrate(
+    VibrationPreset.Success,
+    strength = 0.8f
+)
+```
+
+`strength` uses a normalized `0f..1f` range.
+
+- Android maps it to vibration amplitude.
+- iOS maps it to Core Haptics intensity.
+- JS/Wasm currently ignore it because the browser vibration API only supports timing patterns.
 
 ### Pattern
 
-use `VibratorManager.vibratePattern(timings:List<Long>)`
+```kotlin
+VibratorManager.vibratePattern(listOf(300, 500, 700, 500))
+```
 
-if timings is [300,500,700,500]
-> 0.3 delay > 0.5 vibrate > 0.7 delay > 0.5 vibrate
+`[300, 500, 700, 500]` means:
+
+- wait `300ms`
+- vibrate `500ms`
+- wait `700ms`
+- vibrate `500ms`
+
+You can also use typed patterns:
+
+```kotlin
+VibratorManager.vibratePattern(
+    listOf(
+        VibratePattern(delay = 0, vibrate = 80),
+        VibratePattern(delay = 60, vibrate = 120)
+    )
+)
+```
+
+### Presets
+
+Built-in presets are available through `VibrationPreset`.
+
+```kotlin
+VibratorManager.vibrate(VibrationPreset.Success)
+VibratorManager.vibrate(VibrationPreset.Error)
+```
+
+Available presets:
+
+- `VibrationPreset.Success`
+- `VibrationPreset.Click`
+- `VibrationPreset.DoubleClick`
+- `VibrationPreset.Tick`
+- `VibrationPreset.Warning`
+- `VibrationPreset.Error`
+- `VibrationPreset.Heartbeat`
+- `VibrationPreset.Sos`
+
+If you want to inspect or customize a preset, you can also read its pattern list:
+
+```kotlin
+val successPattern = VibrationPreset.Success.patterns
+val successDuration = VibrationPreset.Success.durationMillis
+```
 
 ### Stop
 
-`VibratorManager.stopVibrate()`
+```kotlin
+VibratorManager.stopVibrate()
+```
 
 
 ### In Kotlin/Js Or Kotlin/Wasm

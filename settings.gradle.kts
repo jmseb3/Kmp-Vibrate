@@ -30,5 +30,6 @@ dependencyResolutionManagement {
 }
 
 include(":Vibrate")
-include(":sample:composeApp")
-
+include(":sample:sharedUI")
+include(":sample:androidApp")
+include(":sample:webApp")
