@@ -6,6 +6,25 @@ enum class VibrationPreset(
     val displayName: String,
     val patterns: List<VibratePattern>
 ) {
+    Click(
+        displayName = "Click",
+        patterns = listOf(
+            VibratePattern(delay = 0, vibrate = 25)
+        )
+    ),
+    DoubleClick(
+        displayName = "Double click",
+        patterns = listOf(
+            VibratePattern(delay = 0, vibrate = 25),
+            VibratePattern(delay = 45, vibrate = 25)
+        )
+    ),
+    Tick(
+        displayName = "Tick",
+        patterns = listOf(
+            VibratePattern(delay = 0, vibrate = 12)
+        )
+    ),
     Success(
         displayName = "Success",
         patterns = listOf(
@@ -52,4 +71,7 @@ enum class VibrationPreset(
 
     val timings: List<Long>
         get() = flattenPatternTimings(patterns)
+
+    val durationMillis: Long
+        get() = timings.sum()
 }

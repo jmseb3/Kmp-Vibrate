@@ -1,5 +1,6 @@
 package com.wonddak
 
+import com.wonddak.model.VibratePattern
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -31,6 +32,12 @@ class VibratorManagerValidationTest {
     }
 
     @Test
+    fun vibrationPresetExposesTimingsAndDuration() {
+        assertEquals(listOf(0L, 25L, 45L, 25L), VibrationPreset.DoubleClick.timings)
+        assertEquals(95L, VibrationPreset.DoubleClick.durationMillis)
+    }
+
+    @Test
     fun normalizeStrengthClampsAndRejectsInvalidValues() {
         // Shared validation keeps Android/iOS mappings safe while Web simply ignores strength.
         assertNull(normalizeStrength(Float.NaN))
@@ -43,8 +50,8 @@ class VibratorManagerValidationTest {
     fun flattenPatternTimingsConvertsTypedPatterns() {
         val timings = flattenPatternTimings(
             listOf(
-                com.wonddak.model.VibratePattern(delay = 10, vibrate = 20),
-                com.wonddak.model.VibratePattern(delay = 30, vibrate = 40)
+                VibratePattern(delay = 10, vibrate = 20),
+                VibratePattern(delay = 30, vibrate = 40)
             )
         )
 

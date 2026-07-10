@@ -30,7 +30,7 @@ fun VibrationPresetSection(
                     },
                     enabled = enabled
                 ) {
-                    Text(preset.displayName)
+                    Text("${preset.displayName} (${preset.durationMillis.asMillisecondsLabel()})")
                 }
             }
         }

@@ -113,6 +113,9 @@ VibratorManager.vibrate(VibrationPreset.Error)
 Available presets:
 
 - `VibrationPreset.Success`
+- `VibrationPreset.Click`
+- `VibrationPreset.DoubleClick`
+- `VibrationPreset.Tick`
 - `VibrationPreset.Warning`
 - `VibrationPreset.Error`
 - `VibrationPreset.Heartbeat`
@@ -122,6 +125,7 @@ If you want to inspect or customize a preset, you can also read its pattern list
 
 ```kotlin
 val successPattern = VibrationPreset.Success.patterns
+val successDuration = VibrationPreset.Success.durationMillis
 ```
 
 ### Stop
