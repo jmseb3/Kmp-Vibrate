@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.0-beta01
+## 1.1.0
 
 - Added configurable vibration strength to the shared API.
 - Applied strength on Android through amplitude mapping and on iOS through Core Haptics intensity.

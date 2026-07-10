@@ -12,7 +12,7 @@ In `lib.versions.toml`  include this dependency version catalog
 
 ```toml
 [versions]
-vibrate = "1.1.0-beta01"
+vibrate = "1.1.0"
 
 [libraries]
 vibrate = { module = "io.github.jmseb3:vibrate", version.ref = "vibrate" }
@@ -28,7 +28,7 @@ or In `build.gradle` of app module, include this dependency
 
 ```gradle
 commonMain.dependencies {
-    implementation("io.github.jmseb3:vibrate:1.1.0-beta01")
+    implementation("io.github.jmseb3:vibrate:1.1.0")
 }
 ```
 
