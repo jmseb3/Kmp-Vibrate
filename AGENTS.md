@@ -91,6 +91,8 @@ publishing and the required signing and Maven Central credentials are available.
 
 ## Git Conventions
 
+- Commit completed work without delay after finishing the requested change.
+- Follow the repository commit rules before committing.
 - Keep commits focused enough to describe in one sentence.
 - Use English Conventional Commit messages, for example:
   - `feat: add vibration presets`
