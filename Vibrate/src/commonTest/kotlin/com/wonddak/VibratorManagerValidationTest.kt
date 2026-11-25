@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // Keep coverage for the legacy pattern API.
+
 package com.wonddak
 
 import com.wonddak.internal.flattenPatternTimings
@@ -10,6 +12,7 @@ import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
+import kotlin.time.Duration.Companion.milliseconds
 
 class VibratorManagerValidationTest {
 
@@ -50,6 +53,14 @@ class VibratorManagerValidationTest {
     fun vibrationPresetExposesTimingsAndDuration() {
         assertEquals(listOf(0L, 25L, 45L, 25L), VibrationPreset.DoubleClick.timings)
         assertEquals(95L, VibrationPreset.DoubleClick.durationMillis)
+        assertEquals(
+            listOf(VibrationSegment(25.milliseconds), VibrationSegment(25.milliseconds, delay = 45.milliseconds)),
+            VibrationPreset.DoubleClick.segments
+        )
+        assertEquals(
+            listOf(VibratePattern(0, 25), VibratePattern(45, 25)),
+            VibrationPreset.DoubleClick.patterns
+        )
     }
 
     @Test

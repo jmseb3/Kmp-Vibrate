@@ -10,12 +10,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.dp
-import com.wonddak.model.VibratePattern
+import com.wonddak.VibrationSegment
 
 @Composable
-internal fun PatternTimeline(pattern: List<VibratePattern>) {
+internal fun PatternTimeline(pattern: List<VibrationSegment>) {
     if (pattern.isEmpty()) return
-    val totalMillis = pattern.sumOf { it.delay + it.vibrate }
+    val totalMillis = pattern.sumOf { (it.delay + it.duration).inWholeMilliseconds }
     val pulseColor = MaterialTheme.colorScheme.primary
     val pauseColor = MaterialTheme.colorScheme.surfaceVariant
     Text("One cycle: $totalMillis ms. Highlighted blocks are vibration.")
@@ -24,13 +24,13 @@ internal fun PatternTimeline(pattern: List<VibratePattern>) {
         var position = 0L
         val pixelsPerMillis = size.width / totalMillis.toDouble()
         for (pulse in pattern) {
-            position += pulse.delay
+            position += pulse.delay.inWholeMilliseconds
             drawRect(
                 color = pulseColor,
                 topLeft = Offset((position * pixelsPerMillis).toFloat(), 0f),
-                size = Size((pulse.vibrate * pixelsPerMillis).toFloat(), size.height)
+                size = Size((pulse.duration.inWholeMilliseconds * pixelsPerMillis).toFloat(), size.height)
             )
-            position += pulse.vibrate
+            position += pulse.duration.inWholeMilliseconds
         }
     }
 }

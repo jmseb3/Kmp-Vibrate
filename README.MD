@@ -120,16 +120,25 @@ VibratorManager.vibratePattern(listOf(300, 500, 700, 500))
 - wait `700ms`
 - vibrate `500ms`
 
-You can also use typed patterns:
+For new typed patterns, use `VibrationSegment`:
 
 ```kotlin
-VibratorManager.vibratePattern(
+import com.wonddak.VibrationSegment
+import kotlin.time.Duration.Companion.milliseconds
+
+VibratorManager.vibrateSegments(
     listOf(
-        VibratePattern(delay = 0, vibrate = 80),
-        VibratePattern(delay = 60, vibrate = 120)
+        VibrationSegment(duration = 80.milliseconds),
+        VibrationSegment(duration = 120.milliseconds, delay = 60.milliseconds)
     )
 )
 ```
+
+`VibratePattern` and the `vibratePattern(List<VibratePattern>)` overloads are
+deprecated with warnings in 1.2.0 and will be removed in a future release.
+To migrate, convert `vibrate` to `duration` and `delay` to `Duration` using
+`.milliseconds`, then call `vibrateSegments()`. To keep a shared strength,
+pass the same `strength` to every segment.
 
 ### Presets
 
@@ -154,7 +163,7 @@ Available presets:
 If you want to inspect or customize a preset, you can also read its pattern list:
 
 ```kotlin
-val successPattern = VibrationPreset.Success.patterns
+val successSegments = VibrationPreset.Success.segments
 val successDuration = VibrationPreset.Success.durationMillis
 ```
 
@@ -188,7 +197,7 @@ VibratorManager.vibrateSegments(
 ```
 
 The repeat count is the total number of plays (1 to 100), and each play includes
-the initial delay. You can also pass `repeatCount` to either pattern-list overload.
+the initial delay. You can also pass `repeatCount` to the flat timing-list overload.
 Repeated patterns expand to at most 10,000 pulses. An invalid segment discards
 the request. Targets without amplitude control play the same timings at their
 default strength.

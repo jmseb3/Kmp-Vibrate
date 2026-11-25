@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // Retain the legacy typed repeat overload.
+
 package com.wonddak
 
 import com.wonddak.internal.normalizePatternTimings
@@ -20,10 +22,13 @@ fun VibratorManager.vibrate(duration: Duration, strength: Float) {
 
 /** Plays a preset [repeatCount] times in total. */
 fun VibratorManager.vibrate(preset: VibrationPreset, repeatCount: Int, strength: Float = 1f) {
-    vibratePattern(preset.patterns, repeatCount, strength)
+    vibrateSegments(preset.segments.map { it.copy(strength = strength) }, repeatCount)
 }
 
 /** Plays a typed pattern [repeatCount] times in total. */
+@Deprecated(
+    message = "Use vibrateSegments() with a list of VibrationSegment. This overload will be removed in a future release."
+)
 fun VibratorManager.vibratePattern(
     timings: List<VibratePattern>,
     repeatCount: Int,

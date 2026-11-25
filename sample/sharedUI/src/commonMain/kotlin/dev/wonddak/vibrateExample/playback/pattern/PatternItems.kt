@@ -19,11 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.wonddak.model.VibratePattern
+import com.wonddak.VibrationSegment
 import dev.wonddak.vibrateExample.ui.asMillisecondsLabel
 
 @Composable
-internal fun PatternItems(pattern: List<VibratePattern>, onRemove: (Int) -> Unit) {
+internal fun PatternItems(pattern: List<VibrationSegment>, onRemove: (Int) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .height(220.dp)
@@ -37,8 +37,8 @@ internal fun PatternItems(pattern: List<VibratePattern>, onRemove: (Int) -> Unit
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("Delay ${item.delay.asMillisecondsLabel()}")
-                    Text("Vibrate ${item.vibrate.asMillisecondsLabel()}")
+                    Text("Delay ${item.delay.inWholeMilliseconds.asMillisecondsLabel()}")
+                    Text("Vibrate ${item.duration.inWholeMilliseconds.asMillisecondsLabel()}")
                 }
                 IconButton(onClick = { onRemove(index) }) {
                     Icon(Icons.Filled.Clear, contentDescription = "Remove pattern item")

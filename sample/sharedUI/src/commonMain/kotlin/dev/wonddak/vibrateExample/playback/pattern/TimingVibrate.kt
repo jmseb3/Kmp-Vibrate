@@ -14,14 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import com.wonddak.VibratorManager
-import com.wonddak.model.VibratePattern
-import com.wonddak.vibratePattern
+import com.wonddak.VibrationSegment
 import dev.wonddak.vibrateExample.ui.SampleSection
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun TimingVibrate(enabled: Boolean, strength: Float) {
     var pattern by remember {
-        mutableStateOf(listOf(VibratePattern(100, 500), VibratePattern(100, 500)))
+        mutableStateOf(List(2) { VibrationSegment(500.milliseconds, delay = 100.milliseconds) })
     }
     var repeats by remember { mutableStateOf("1") }
     val repeatCount = repeats.toIntOrNull()?.takeIf { it in 1..100 }
@@ -49,7 +49,9 @@ fun TimingVibrate(enabled: Boolean, strength: Float) {
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                VibratorManager.vibratePattern(pattern, checkNotNull(repeatCount), strength)
+                VibratorManager.vibrateSegments(
+                    pattern.map { it.copy(strength = strength) }, checkNotNull(repeatCount)
+                )
             },
             enabled = pattern.isNotEmpty() && repeatCount != null && enabled
         ) {

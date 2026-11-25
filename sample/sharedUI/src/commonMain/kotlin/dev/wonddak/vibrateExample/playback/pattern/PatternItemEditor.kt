@@ -18,10 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.wonddak.model.VibratePattern
+import com.wonddak.VibrationSegment
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
-internal fun PatternItemEditor(canAddItem: Boolean, onAdd: (VibratePattern) -> Unit) {
+internal fun PatternItemEditor(canAddItem: Boolean, onAdd: (VibrationSegment) -> Unit) {
     var delay by remember { mutableStateOf("") }
     var vibrate by remember { mutableStateOf("") }
     val delayMillis = delay.toLongOrNull()?.takeIf { it in 0L..Int.MAX_VALUE.toLong() }
@@ -56,7 +57,12 @@ internal fun PatternItemEditor(canAddItem: Boolean, onAdd: (VibratePattern) -> U
         }
         Button(
             onClick = {
-                onAdd(VibratePattern(checkNotNull(delayMillis), checkNotNull(vibrateMillis)))
+                onAdd(
+                    VibrationSegment(
+                        duration = checkNotNull(vibrateMillis).milliseconds,
+                        delay = checkNotNull(delayMillis).milliseconds
+                    )
+                )
             },
             enabled = canAddItem && delayMillis != null && vibrateMillis != null
         ) {

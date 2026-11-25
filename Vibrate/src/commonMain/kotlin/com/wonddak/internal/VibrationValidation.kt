@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // Validate patterns passed to the legacy API.
+
 package com.wonddak.internal
 
 import com.wonddak.model.VibratePattern

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // Retain the legacy typed overloads.
+
 package com.wonddak
 
 import com.wonddak.internal.flattenPatternTimings
@@ -84,6 +86,14 @@ fun VibratorManager.vibrateSecond(second: Int, strength: Float) = vibrate(
  * extension func for [VibratorManager.vibratePattern]
  * @param[timings] [VibratePattern] to [LongArray] and run [VibratorManager.vibratePattern]
  */
+@Deprecated(
+    message = "Use vibrateSegments() with a list of VibrationSegment. This overload will be removed in a future release.",
+    replaceWith = ReplaceWith(
+        "vibrateSegments(timings.map { VibrationSegment(duration = it.vibrate.milliseconds, delay = it.delay.milliseconds) })",
+        "com.wonddak.VibrationSegment",
+        "kotlin.time.Duration.Companion.milliseconds"
+    )
+)
 fun VibratorManager.vibratePattern(timings: List<VibratePattern>) = vibratePattern(
     flattenPatternTimings(timings)
 )
@@ -91,6 +101,9 @@ fun VibratorManager.vibratePattern(timings: List<VibratePattern>) = vibratePatte
 /**
  * extension func for [VibratorManager.vibratePattern] with strength.
  */
+@Deprecated(
+    message = "Use vibrateSegments() with a list of VibrationSegment. This overload will be removed in a future release."
+)
 fun VibratorManager.vibratePattern(timings: List<VibratePattern>, strength: Float) = vibratePattern(
     flattenPatternTimings(timings),
     strength
@@ -100,13 +113,13 @@ fun VibratorManager.vibratePattern(timings: List<VibratePattern>, strength: Floa
  * extension func for common presets
  */
 fun VibratorManager.vibrate(preset: VibrationPreset) = vibratePattern(
-    preset.patterns
+    preset.timings
 )
 
 /**
  * extension func for common presets with strength.
  */
 fun VibratorManager.vibrate(preset: VibrationPreset, strength: Float) = vibratePattern(
-    preset.patterns,
+    preset.timings,
     strength
 )

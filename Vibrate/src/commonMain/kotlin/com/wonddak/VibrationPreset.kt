@@ -1,77 +1,87 @@
+@file:Suppress("DEPRECATION") // Keep the legacy patterns property available.
+
 package com.wonddak
 
-import com.wonddak.internal.flattenPatternTimings
 import com.wonddak.model.VibratePattern
+import kotlin.time.Duration.Companion.milliseconds
 
 enum class VibrationPreset(
     val displayName: String,
-    val patterns: List<VibratePattern>
+    val segments: List<VibrationSegment>
 ) {
     Click(
         displayName = "Click",
-        patterns = listOf(
-            VibratePattern(delay = 0, vibrate = 25)
+        segments = listOf(
+            VibrationSegment(25.milliseconds)
         )
     ),
     DoubleClick(
         displayName = "Double click",
-        patterns = listOf(
-            VibratePattern(delay = 0, vibrate = 25),
-            VibratePattern(delay = 45, vibrate = 25)
+        segments = listOf(
+            VibrationSegment(25.milliseconds),
+            VibrationSegment(25.milliseconds, delay = 45.milliseconds)
         )
     ),
     Tick(
         displayName = "Tick",
-        patterns = listOf(
-            VibratePattern(delay = 0, vibrate = 12)
+        segments = listOf(
+            VibrationSegment(12.milliseconds)
         )
     ),
     Success(
         displayName = "Success",
-        patterns = listOf(
-            VibratePattern(delay = 0, vibrate = 40),
-            VibratePattern(delay = 45, vibrate = 70)
+        segments = listOf(
+            VibrationSegment(40.milliseconds),
+            VibrationSegment(70.milliseconds, delay = 45.milliseconds)
         )
     ),
     Warning(
         displayName = "Warning",
-        patterns = listOf(
-            VibratePattern(delay = 0, vibrate = 110),
-            VibratePattern(delay = 70, vibrate = 110)
+        segments = listOf(
+            VibrationSegment(110.milliseconds),
+            VibrationSegment(110.milliseconds, delay = 70.milliseconds)
         )
     ),
     Error(
         displayName = "Error",
-        patterns = listOf(
-            VibratePattern(delay = 0, vibrate = 80),
-            VibratePattern(delay = 60, vibrate = 80),
-            VibratePattern(delay = 60, vibrate = 80)
+        segments = listOf(
+            VibrationSegment(80.milliseconds),
+            VibrationSegment(80.milliseconds, delay = 60.milliseconds),
+            VibrationSegment(80.milliseconds, delay = 60.milliseconds)
         )
     ),
     Heartbeat(
         displayName = "Heartbeat",
-        patterns = listOf(
-            VibratePattern(delay = 0, vibrate = 90),
-            VibratePattern(delay = 120, vibrate = 50)
+        segments = listOf(
+            VibrationSegment(90.milliseconds),
+            VibrationSegment(50.milliseconds, delay = 120.milliseconds)
         )
     ),
     Sos(
         displayName = "SOS",
-        patterns = listOf(
-            VibratePattern(delay = 0, vibrate = 60),
-            VibratePattern(delay = 40, vibrate = 60),
-            VibratePattern(delay = 40, vibrate = 60),
-            VibratePattern(delay = 120, vibrate = 180),
-            VibratePattern(delay = 120, vibrate = 180),
-            VibratePattern(delay = 120, vibrate = 180),
-            VibratePattern(delay = 120, vibrate = 60),
-            VibratePattern(delay = 40, vibrate = 60),
-            VibratePattern(delay = 40, vibrate = 60)
+        segments = listOf(
+            VibrationSegment(60.milliseconds),
+            VibrationSegment(60.milliseconds, delay = 40.milliseconds),
+            VibrationSegment(60.milliseconds, delay = 40.milliseconds),
+            VibrationSegment(180.milliseconds, delay = 120.milliseconds),
+            VibrationSegment(180.milliseconds, delay = 120.milliseconds),
+            VibrationSegment(180.milliseconds, delay = 120.milliseconds),
+            VibrationSegment(60.milliseconds, delay = 120.milliseconds),
+            VibrationSegment(60.milliseconds, delay = 40.milliseconds),
+            VibrationSegment(60.milliseconds, delay = 40.milliseconds)
         )
     );
 
+    @Deprecated(
+        message = "Use segments to inspect or customize this preset. This property will be removed in a future release.",
+        replaceWith = ReplaceWith("segments")
+    )
+    val patterns: List<VibratePattern> = segments.map {
+        VibratePattern(delay = it.delay.inWholeMilliseconds, vibrate = it.duration.inWholeMilliseconds)
+    }
+
     val timings: List<Long>
-        get() = flattenPatternTimings(patterns)
+        get() = segments.flatMap { listOf(it.delay.inWholeMilliseconds, it.duration.inWholeMilliseconds) }
 
     val durationMillis: Long
         get() = timings.sum()
