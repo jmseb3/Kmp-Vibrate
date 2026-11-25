@@ -102,7 +102,14 @@ fun VibratorManager.vibratePattern(timings: List<VibratePattern>) = vibratePatte
  * extension func for [VibratorManager.vibratePattern] with strength.
  */
 @Deprecated(
-    message = "Use vibrateSegments() with a list of VibrationSegment. This overload will be removed in a future release."
+    message = "Use vibrateSegments() with a list of VibrationSegment. This overload will be removed in a future release.",
+    replaceWith = ReplaceWith(
+        "run { val patterns = timings; val segmentStrength = strength; " +
+            "vibrateSegments(patterns.map { pattern -> VibrationSegment(duration = pattern.vibrate.milliseconds, " +
+            "delay = pattern.delay.milliseconds, strength = segmentStrength) }) }",
+        "com.wonddak.VibrationSegment",
+        "kotlin.time.Duration.Companion.milliseconds"
+    )
 )
 fun VibratorManager.vibratePattern(timings: List<VibratePattern>, strength: Float) = vibratePattern(
     flattenPatternTimings(timings),

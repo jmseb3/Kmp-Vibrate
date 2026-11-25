@@ -27,7 +27,14 @@ fun VibratorManager.vibrate(preset: VibrationPreset, repeatCount: Int, strength:
 
 /** Plays a typed pattern [repeatCount] times in total. */
 @Deprecated(
-    message = "Use vibrateSegments() with a list of VibrationSegment. This overload will be removed in a future release."
+    message = "Use vibrateSegments() with a list of VibrationSegment. This overload will be removed in a future release.",
+    replaceWith = ReplaceWith(
+        "run { val patterns = timings; val count = repeatCount; val segmentStrength = strength; " +
+            "vibrateSegments(patterns.map { pattern -> VibrationSegment(duration = pattern.vibrate.milliseconds, " +
+            "delay = pattern.delay.milliseconds, strength = segmentStrength) }, repeatCount = count) }",
+        "com.wonddak.VibrationSegment",
+        "kotlin.time.Duration.Companion.milliseconds"
+    )
 )
 fun VibratorManager.vibratePattern(
     timings: List<VibratePattern>,
