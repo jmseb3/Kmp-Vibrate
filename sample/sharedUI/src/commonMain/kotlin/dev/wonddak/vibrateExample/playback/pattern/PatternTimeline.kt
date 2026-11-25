@@ -1,4 +1,4 @@
-package dev.wonddak.vibrateExample
+package dev.wonddak.vibrateExample.playback.pattern
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxWidth

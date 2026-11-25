@@ -2,6 +2,11 @@
 
 package com.wonddak
 
+import com.wonddak.internal.normalizePatternTimings
+import com.wonddak.internal.normalizeStrength
+import com.wonddak.internal.preparePulses
+import com.wonddak.internal.toTimings
+
 @JsName("window")
 external val window: Window
 

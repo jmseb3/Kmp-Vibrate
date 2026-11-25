@@ -1,5 +1,6 @@
 package com.wonddak
 
+import com.wonddak.internal.normalizePatternTimings
 import com.wonddak.model.VibratePattern
 import kotlin.jvm.JvmName
 import kotlin.time.Duration

@@ -1,4 +1,4 @@
-package com.wonddak
+package com.wonddak.internal
 
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.ExperimentalAtomicApi

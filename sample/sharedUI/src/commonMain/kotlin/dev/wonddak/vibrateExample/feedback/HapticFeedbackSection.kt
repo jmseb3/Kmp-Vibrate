@@ -1,4 +1,4 @@
-package dev.wonddak.vibrateExample
+package dev.wonddak.vibrateExample.feedback
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -8,6 +8,7 @@ import com.wonddak.VibrationPreset
 import com.wonddak.VibrationSegment
 import com.wonddak.VibratorManager
 import com.wonddak.vibrate
+import dev.wonddak.vibrateExample.ui.SampleSection
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable

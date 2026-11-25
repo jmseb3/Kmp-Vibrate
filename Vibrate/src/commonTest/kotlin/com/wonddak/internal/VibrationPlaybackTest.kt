@@ -1,11 +1,12 @@
-package com.wonddak
+package com.wonddak.internal
 
+import com.wonddak.VibrationSegment
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.microseconds
+import kotlin.time.Duration.Companion.milliseconds
 
 class VibrationPlaybackTest {
     @Test

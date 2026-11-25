@@ -1,5 +1,9 @@
 package com.wonddak
 
+import com.wonddak.internal.flattenPatternTimings
+import com.wonddak.internal.normalizeDurationMillis
+import com.wonddak.internal.normalizePatternTimings
+import com.wonddak.internal.normalizeStrength
 import com.wonddak.model.VibratePattern
 import kotlin.test.Test
 import kotlin.test.assertContentEquals

@@ -5,6 +5,11 @@ import android.content.Context.VIBRATOR_SERVICE
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import com.wonddak.internal.normalizeDurationMillis
+import com.wonddak.internal.normalizePatternTimings
+import com.wonddak.internal.normalizeStrength
+import com.wonddak.internal.preparePulses
+import com.wonddak.internal.toTimings
 import kotlin.math.roundToInt
 
 /**

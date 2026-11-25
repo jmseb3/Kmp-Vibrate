@@ -1,5 +1,11 @@
 package com.wonddak
 
+import com.wonddak.internal.CustomHaptic
+import com.wonddak.internal.Pulse
+import com.wonddak.internal.normalizeDurationMillis
+import com.wonddak.internal.normalizePatternTimings
+import com.wonddak.internal.normalizeStrength
+import com.wonddak.internal.preparePulses
 import platform.CoreHaptics.CHHapticEngine
 import platform.Foundation.NSThread
 import platform.UIKit.UIImpactFeedbackGenerator

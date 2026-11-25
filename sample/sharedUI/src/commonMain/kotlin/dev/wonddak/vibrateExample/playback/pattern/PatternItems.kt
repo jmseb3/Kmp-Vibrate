@@ -1,4 +1,4 @@
-package dev.wonddak.vibrateExample
+package dev.wonddak.vibrateExample.playback.pattern
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.wonddak.model.VibratePattern
+import dev.wonddak.vibrateExample.ui.asMillisecondsLabel
 
 @Composable
 internal fun PatternItems(pattern: List<VibratePattern>, onRemove: (Int) -> Unit) {

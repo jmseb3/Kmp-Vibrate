@@ -1,5 +1,6 @@
 package com.wonddak
 
+import com.wonddak.internal.flattenPatternTimings
 import com.wonddak.model.VibratePattern
 
 enum class VibrationPreset(

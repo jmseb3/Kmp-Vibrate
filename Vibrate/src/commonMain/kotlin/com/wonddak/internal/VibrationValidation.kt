@@ -1,4 +1,4 @@
-package com.wonddak
+package com.wonddak.internal
 
 import com.wonddak.model.VibratePattern
 

@@ -1,4 +1,4 @@
-package dev.wonddak.vibrateExample
+package dev.wonddak.vibrateExample.playback
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.wonddak.VibratorManager
 import com.wonddak.vibrate
+import dev.wonddak.vibrateExample.ui.SampleSection
 import kotlin.time.Duration.Companion.seconds
 
 @Composable

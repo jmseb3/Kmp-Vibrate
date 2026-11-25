@@ -1,7 +1,11 @@
 package com.wonddak
 
-import kotlinx.browser.window
+import com.wonddak.internal.normalizePatternTimings
+import com.wonddak.internal.normalizeStrength
+import com.wonddak.internal.preparePulses
+import com.wonddak.internal.toTimings
 import kotlin.js.jsTypeOf
+import kotlinx.browser.window
 
 actual object VibratorManager {
 

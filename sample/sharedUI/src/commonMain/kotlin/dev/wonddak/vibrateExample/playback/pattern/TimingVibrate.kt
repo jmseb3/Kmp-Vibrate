@@ -1,4 +1,4 @@
-package dev.wonddak.vibrateExample
+package dev.wonddak.vibrateExample.playback.pattern
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,6 +16,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.wonddak.VibratorManager
 import com.wonddak.model.VibratePattern
 import com.wonddak.vibratePattern
+import dev.wonddak.vibrateExample.ui.SampleSection
 
 @Composable
 fun TimingVibrate(enabled: Boolean, strength: Float) {

@@ -22,6 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.wonddak.VibratorManager
+import dev.wonddak.vibrateExample.feedback.HapticFeedbackSection
+import dev.wonddak.vibrateExample.feedback.VibrationPresetSection
+import dev.wonddak.vibrateExample.playback.pattern.TimingVibrate
+import dev.wonddak.vibrateExample.playback.singleVibrate
+import dev.wonddak.vibrateExample.ui.SampleSection
+import dev.wonddak.vibrateExample.ui.SupportBanner
 import kotlin.math.roundToInt
 
 @Composable
