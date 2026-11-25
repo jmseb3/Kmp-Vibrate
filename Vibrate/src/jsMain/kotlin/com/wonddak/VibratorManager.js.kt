@@ -1,6 +1,7 @@
 package com.wonddak
 
 import kotlinx.browser.window
+import kotlin.js.jsTypeOf
 
 actual object VibratorManager {
 
@@ -13,7 +14,7 @@ actual object VibratorManager {
     }
 
     actual fun isSupported(): Boolean {
-        return window.navigator.asDynamic().vibrate != undefined
+        return jsTypeOf(window.navigator.asDynamic().vibrate) == "function"
     }
 
     actual fun capabilities(): VibrationCapabilities = VibrationCapabilities(
@@ -21,16 +22,24 @@ actual object VibratorManager {
         supportsAmplitudeControl = false
     )
 
+    actual fun feedback(type: HapticFeedback) = vibrate(type.fallback)
+
+    actual fun vibrateSegments(segments: List<VibrationSegment>, repeatCount: Int) {
+        val pulses = preparePulses(segments, repeatCount) ?: return
+        vibratePattern(pulses.toTimings())
+    }
+
     actual fun vibrate(time: Long) {
-        val safeDuration = normalizeDurationMillis(time) ?: return
+        if (time !in 1..Int.MAX_VALUE.toLong()) return
         if (isSupported()) {
             clearPendingPattern()
-            window.navigator.vibrate(safeDuration)
+            window.navigator.vibrate(time.toInt())
         }
     }
 
     actual fun vibrate(time: Long, strength: Float) {
         // The Web Vibration API does not expose amplitude, so strength is intentionally ignored.
+        if (normalizeStrength(strength) == null) return
         vibrate(time)
     }
 
@@ -39,24 +48,28 @@ actual object VibratorManager {
             return
         }
 
-        val convertTimings = normalizePatternTimings(timings)?.toMutableList() ?: return
+        val convertTimings = normalizePatternTimings(timings) ?: return
+        if (convertTimings.any { it > Int.MAX_VALUE }) return
         clearPendingPattern()
 
         // navigator.vibrate starts with "vibrate now", so an initial delay must be scheduled manually.
-        val delayMillis = convertTimings.removeFirst().toInt()
+        val delayMillis = convertTimings[0].toInt()
+        val pattern = Array(convertTimings.size - 1) { convertTimings[it + 1].toInt() }
         if (delayMillis == 0) {
-            window.navigator.vibrate(convertTimings.toTypedArray())
+            window.navigator.asDynamic().vibrate(pattern)
             return
         }
 
+        window.navigator.vibrate(0)
         pendingTimeoutId = window.setTimeout({
             pendingTimeoutId = null
-            window.navigator.vibrate(convertTimings.toTypedArray())
+            window.navigator.asDynamic().vibrate(pattern)
         }, delayMillis)
     }
 
     actual fun vibratePattern(timings: List<Long>, strength: Float) {
         // The Web Vibration API does not expose amplitude, so strength is intentionally ignored.
+        if (normalizeStrength(strength) == null) return
         vibratePattern(timings)
     }
 

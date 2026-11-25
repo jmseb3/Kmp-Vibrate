@@ -18,6 +18,17 @@ expect object VibratorManager {
      */
     fun capabilities(): VibrationCapabilities
 
+    /** Plays feedback for a UI event, using a timing preset where needed. */
+    fun feedback(type: HapticFeedback)
+
+    /**
+     * Plays segments [repeatCount] times in total. Each iteration includes its initial delay.
+     * Platforms without amplitude control play the same timings at their default strength.
+     * Ignores invalid segments, repeat counts outside 1..100, and patterns expanding
+     * to more than 10,000 pulses. Platform playback limits still apply.
+     */
+    fun vibrateSegments(segments: List<VibrationSegment>, repeatCount: Int = 1)
+
     /**
      * make vibrate for [time] second
      *

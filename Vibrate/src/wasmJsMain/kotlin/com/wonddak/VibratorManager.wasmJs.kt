@@ -44,16 +44,24 @@ actual object VibratorManager {
         supportsAmplitudeControl = false
     )
 
+    actual fun feedback(type: HapticFeedback) = vibrate(type.fallback)
+
+    actual fun vibrateSegments(segments: List<VibrationSegment>, repeatCount: Int) {
+        val pulses = preparePulses(segments, repeatCount) ?: return
+        vibratePattern(pulses.toTimings())
+    }
+
     actual fun vibrate(time: Long) {
-        val safeDuration = normalizeDurationMillis(time) ?: return
+        if (time !in 1..Int.MAX_VALUE.toLong()) return
         if (isSupported()) {
             clearPendingPattern()
-            window.navigator.vibrate(safeDuration.toInt().toJsNumber())
+            window.navigator.vibrate(time.toInt().toJsNumber())
         }
     }
 
     actual fun vibrate(time: Long, strength: Float) {
         // The Web Vibration API does not expose amplitude, so strength is intentionally ignored.
+        if (normalizeStrength(strength) == null) return
         vibrate(time)
     }
 
@@ -62,14 +70,15 @@ actual object VibratorManager {
             return
         }
 
-        val convertTimings = normalizePatternTimings(timings)?.toMutableList() ?: return
+        val convertTimings = normalizePatternTimings(timings) ?: return
+        if (convertTimings.any { it > Int.MAX_VALUE }) return
         clearPendingPattern()
 
         // navigator.vibrate starts with "vibrate now", so an initial delay must be scheduled manually.
-        val delayFirst = convertTimings.removeFirst().toInt()
+        val delayFirst = convertTimings[0].toInt()
         val patternArray = JsArray<JsNumber>()
-        for (i in 0 until convertTimings.size) {
-            patternArray[i] = convertTimings[i].toInt().toJsNumber()
+        for (i in 1 until convertTimings.size) {
+            patternArray[i - 1] = convertTimings[i].toInt().toJsNumber()
         }
 
         if (delayFirst == 0) {
@@ -77,6 +86,7 @@ actual object VibratorManager {
             return
         }
 
+        window.navigator.vibrate(0.toJsNumber())
         pendingTimeoutId = window.setTimeout({
             pendingTimeoutId = null
             window.navigator.vibrate(patternArray)
@@ -85,6 +95,7 @@ actual object VibratorManager {
 
     actual fun vibratePattern(timings: List<Long>, strength: Float) {
         // The Web Vibration API does not expose amplitude, so strength is intentionally ignored.
+        if (normalizeStrength(strength) == null) return
         vibratePattern(timings)
     }
 

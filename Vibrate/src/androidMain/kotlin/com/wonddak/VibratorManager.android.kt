@@ -48,6 +48,37 @@ actual object VibratorManager {
         )
     }
 
+    actual fun feedback(type: HapticFeedback) {
+        val currentVibrator = vibratorOrNull() ?: return
+        val effect = when (type) {
+            HapticFeedback.Click -> VibrationEffect.EFFECT_CLICK
+            HapticFeedback.SelectionChanged -> VibrationEffect.EFFECT_TICK
+            else -> null
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && effect != null) {
+            currentVibrator.vibrate(VibrationEffect.createPredefined(effect))
+        } else {
+            vibrate(type.fallback)
+        }
+    }
+
+    actual fun vibrateSegments(segments: List<VibrationSegment>, repeatCount: Int) {
+        val currentVibrator = vibratorOrNull() ?: return
+        val pulses = preparePulses(segments, repeatCount) ?: return
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && currentVibrator.hasAmplitudeControl()) {
+            val timings = LongArray(pulses.size * 2)
+            val amplitudes = IntArray(timings.size)
+            pulses.forEachIndexed { index, pulse ->
+                timings[index * 2] = pulse.delayMillis
+                timings[index * 2 + 1] = pulse.durationMillis
+                amplitudes[index * 2 + 1] = pulse.strength.toAndroidAmplitude()
+            }
+            currentVibrator.vibrate(VibrationEffect.createWaveform(timings, amplitudes, -1))
+        } else {
+            currentVibrator.vibrate(pulses.toTimings().toLongArray(), -1)
+        }
+    }
+
     /**
      * make vibrate for [time] second
      *
@@ -59,10 +90,11 @@ actual object VibratorManager {
 
     actual fun vibrate(time: Long, strength: Float) {
         val safeDuration = normalizeDurationMillis(time) ?: return
+        val normalizedStrength = normalizeStrength(strength) ?: return
         val currentVibrator = vibratorOrNull() ?: return
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Amplitude control is only available on API 26+, so older devices fall back to duration only.
-            val amplitude = strength.toAndroidAmplitude() ?: return
+            val amplitude = normalizedStrength.toAndroidAmplitude()
             currentVibrator.vibrate(
                 VibrationEffect.createOneShot(safeDuration, amplitude)
             )
@@ -83,11 +115,12 @@ actual object VibratorManager {
     }
 
     actual fun vibratePattern(timings: List<Long>, strength: Float) {
+        val normalizedStrength = normalizeStrength(strength) ?: return
         val currentVibrator = vibratorOrNull() ?: return
         val convertArray = normalizePatternTimings(timings) ?: return
         val repeat = -1
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val amplitude = strength.toAndroidAmplitude() ?: return
+            val amplitude = normalizedStrength.toAndroidAmplitude()
             // Android waveforms expect an amplitude per timing slot. Delay slots stay silent with 0 amplitude.
             val amplitudes = IntArray(convertArray.size) { index ->
                 if (index % 2 == 0) 0 else amplitude
@@ -107,8 +140,7 @@ actual object VibratorManager {
 
 }
 
-private fun Float.toAndroidAmplitude(): Int? {
-    val normalizedStrength = normalizeStrength(this) ?: return null
+private fun Float.toAndroidAmplitude(): Int {
     // Android amplitudes are integer steps in the inclusive range 1..255.
-    return (normalizedStrength * 255).roundToInt().coerceIn(1, 255)
+    return (this * 255).roundToInt().coerceIn(1, 255)
 }
