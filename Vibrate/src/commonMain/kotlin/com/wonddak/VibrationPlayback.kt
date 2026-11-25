@@ -1,4 +1,4 @@
-@file:Suppress("DEPRECATION") // Retain the legacy typed repeat overload.
+@file:Suppress("DEPRECATION") // Bridge to the platform millisecond API and retain the legacy typed repeat overload.
 
 package com.wonddak
 
@@ -49,6 +49,17 @@ fun VibratorManager.vibratePattern(
 }
 
 /** Plays flat delay/vibration pairs [repeatCount] times in total. */
+@Deprecated(
+    message = "Use vibrateSegments() with VibrationSegment durations. This overload will be removed in a future release.",
+    replaceWith = ReplaceWith(
+        "run { val patternTimings = timings; val count = repeatCount; val segmentStrength = strength; " +
+            "vibrateSegments(patternTimings.chunked(2).map { pair -> " +
+            "VibrationSegment(duration = pair.getOrElse(1) { 0L }.milliseconds, " +
+            "delay = pair[0].milliseconds, strength = segmentStrength) }, repeatCount = count) }",
+        "com.wonddak.model.VibrationSegment",
+        "kotlin.time.Duration.Companion.milliseconds"
+    )
+)
 @JvmName("vibrateRawPatternRepeated")
 fun VibratorManager.vibratePattern(
     timings: List<Long>,

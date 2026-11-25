@@ -1,7 +1,14 @@
-@file:Suppress("DEPRECATION") // Retain the legacy typed overloads.
+@file:Suppress("DEPRECATION") // Retain the legacy playback overloads.
 
 package com.wonddak
 
+import com.wonddak.internal.MILLISECONDS_IMPORT
+import com.wonddak.internal.RAW_PATTERN_REPLACEMENT
+import com.wonddak.internal.RAW_PATTERN_STRENGTH_REPLACEMENT
+import com.wonddak.internal.USE_DURATION
+import com.wonddak.internal.USE_SEGMENTS
+import com.wonddak.internal.VIBRATE_DURATION_IMPORT
+import com.wonddak.internal.VIBRATION_SEGMENT_IMPORT
 import com.wonddak.internal.flattenPatternTimings
 import com.wonddak.model.VibratePattern
 import com.wonddak.model.VibrationSegment
@@ -34,16 +41,24 @@ expect object VibratorManager {
     fun vibrateSegments(segments: List<VibrationSegment>, repeatCount: Int = 1)
 
     /**
-     * make vibrate for [time] second
+     * Vibrates for [time] milliseconds.
      *
      * - 3000 = 3 Second
      */
+    @Deprecated(
+        message = USE_DURATION,
+        replaceWith = ReplaceWith("vibrate(time.milliseconds)", VIBRATE_DURATION_IMPORT, MILLISECONDS_IMPORT)
+    )
     fun vibrate(time: Long)
 
     /**
      * make vibrate for [time] milliseconds with [strength].
      * [strength] is normalized between 0f and 1f.
      */
+    @Deprecated(
+        message = USE_DURATION,
+        replaceWith = ReplaceWith("vibrate(time.milliseconds, strength)", VIBRATE_DURATION_IMPORT, MILLISECONDS_IMPORT)
+    )
     fun vibrate(time: Long, strength: Float)
 
     /**
@@ -53,12 +68,20 @@ expect object VibratorManager {
      *
      * - if (300,500,700,500) > 0.3 delay > 0.5 vibrate > 0.7 delay . 0.5 vibrate
      */
+    @Deprecated(
+        message = USE_SEGMENTS,
+        replaceWith = ReplaceWith(RAW_PATTERN_REPLACEMENT, VIBRATION_SEGMENT_IMPORT, MILLISECONDS_IMPORT)
+    )
     fun vibratePattern(timings: List<Long>)
 
     /**
      * make vibrate for [timings] with [strength].
      * [strength] is normalized between 0f and 1f.
      */
+    @Deprecated(
+        message = USE_SEGMENTS,
+        replaceWith = ReplaceWith(RAW_PATTERN_STRENGTH_REPLACEMENT, VIBRATION_SEGMENT_IMPORT, MILLISECONDS_IMPORT)
+    )
     fun vibratePattern(timings: List<Long>, strength: Float)
 
     /**
@@ -71,6 +94,14 @@ expect object VibratorManager {
  * extension func for [VibratorManager.vibrate]
  * @param[second] vibrate second, if 1 to change to 1000(Long) and run [VibratorManager.vibrate]
  */
+@Deprecated(
+    message = "Use vibrate() with a Kotlin Duration.",
+    replaceWith = ReplaceWith(
+        "vibrate(second.seconds)",
+        "com.wonddak.vibrate",
+        "kotlin.time.Duration.Companion.seconds"
+    )
+)
 fun VibratorManager.vibrateSecond(second: Int) = vibrate(
     second.toLong() * 1000
 )
@@ -78,6 +109,14 @@ fun VibratorManager.vibrateSecond(second: Int) = vibrate(
 /**
  * extension func for [VibratorManager.vibrate] with strength.
  */
+@Deprecated(
+    message = "Use vibrate() with a Kotlin Duration.",
+    replaceWith = ReplaceWith(
+        "vibrate(second.seconds, strength)",
+        "com.wonddak.vibrate",
+        "kotlin.time.Duration.Companion.seconds"
+    )
+)
 fun VibratorManager.vibrateSecond(second: Int, strength: Float) = vibrate(
     second.toLong() * 1000,
     strength

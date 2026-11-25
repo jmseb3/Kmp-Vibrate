@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION") // Keep the platform implementations callable by the legacy API.
+
 package com.wonddak
 
 import android.content.Context
@@ -5,6 +7,13 @@ import android.content.Context.VIBRATOR_SERVICE
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import com.wonddak.internal.MILLISECONDS_IMPORT
+import com.wonddak.internal.RAW_PATTERN_REPLACEMENT
+import com.wonddak.internal.RAW_PATTERN_STRENGTH_REPLACEMENT
+import com.wonddak.internal.USE_DURATION
+import com.wonddak.internal.USE_SEGMENTS
+import com.wonddak.internal.VIBRATE_DURATION_IMPORT
+import com.wonddak.internal.VIBRATION_SEGMENT_IMPORT
 import com.wonddak.internal.normalizeDurationMillis
 import com.wonddak.internal.normalizePatternTimings
 import com.wonddak.internal.normalizeStrength
@@ -90,10 +99,18 @@ actual object VibratorManager {
      *
      * - 3000 = 3Sec
      */
+    @Deprecated(
+        message = USE_DURATION,
+        replaceWith = ReplaceWith("vibrate(time.milliseconds)", VIBRATE_DURATION_IMPORT, MILLISECONDS_IMPORT)
+    )
     actual fun vibrate(time: Long) {
         vibrate(time, 1f)
     }
 
+    @Deprecated(
+        message = USE_DURATION,
+        replaceWith = ReplaceWith("vibrate(time.milliseconds, strength)", VIBRATE_DURATION_IMPORT, MILLISECONDS_IMPORT)
+    )
     actual fun vibrate(time: Long, strength: Float) {
         val safeDuration = normalizeDurationMillis(time) ?: return
         val normalizedStrength = normalizeStrength(strength) ?: return
@@ -116,10 +133,18 @@ actual object VibratorManager {
      *
      * - if \[300,500,700,500] > 0.3 delay > 0.5 vibrate > 0.7 delay . 0.5 vibrate
      */
+    @Deprecated(
+        message = USE_SEGMENTS,
+        replaceWith = ReplaceWith(RAW_PATTERN_REPLACEMENT, VIBRATION_SEGMENT_IMPORT, MILLISECONDS_IMPORT)
+    )
     actual fun vibratePattern(timings: List<Long>) {
         vibratePattern(timings, 1f)
     }
 
+    @Deprecated(
+        message = USE_SEGMENTS,
+        replaceWith = ReplaceWith(RAW_PATTERN_STRENGTH_REPLACEMENT, VIBRATION_SEGMENT_IMPORT, MILLISECONDS_IMPORT)
+    )
     actual fun vibratePattern(timings: List<Long>, strength: Float) {
         val normalizedStrength = normalizeStrength(strength) ?: return
         val currentVibrator = vibratorOrNull() ?: return

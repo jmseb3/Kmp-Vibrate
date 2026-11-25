@@ -6,6 +6,7 @@
 - Added UI feedback with UIKit effects on iOS, system click and tick effects on Android 29+, and timing presets as fallbacks.
 - Added Kotlin Duration support, per-segment strength, and finite pattern repetition.
 - Deprecated `VibratePattern`, its typed playback overloads, and `VibrationPreset.patterns`. Migrate to `VibrationSegment`, `vibrateSegments()`, and `VibrationPreset.segments`.
+- Deprecated millisecond-based `vibrate(Long)`, second-based `vibrateSecond(Int)`, and flat `vibratePattern(List<Long>)` overloads. Use `Duration` with `vibrate()` or `vibrateSegments()`.
 - Added capability details, a strength slider, feedback examples, and a pattern timeline with Kotlin code export to the sample.
 - Made zero, negative, and NaN strength requests no-ops across targets, guarded web timing conversions, and restored iOS playback on the next request after engine interruptions or resets.
 

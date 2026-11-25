@@ -43,22 +43,29 @@ Example app source lives in [`sample/`](sample).
 
 ## How To Use Vibrate
 
-All durations are in milliseconds.
+Use Kotlin `Duration` for playback times. The legacy numeric APIs interpret
+durations as milliseconds, except for `vibrateSecond()`.
 
 ### Check Support
 
 ```kotlin
+import com.wonddak.vibrate
+import kotlin.time.Duration.Companion.milliseconds
+
 if (VibratorManager.isSupported()) {
-    VibratorManager.vibrate(300)
+    VibratorManager.vibrate(300.milliseconds)
 }
 ```
 
 ### Capabilities
 
 ```kotlin
+import com.wonddak.vibrate
+import kotlin.time.Duration.Companion.milliseconds
+
 val capabilities = VibratorManager.capabilities()
 if (capabilities.isSupported) {
-    VibratorManager.vibrate(300)
+    VibratorManager.vibrate(300.milliseconds)
 }
 // Use capabilities.supportsAmplitudeControl to enable strength controls in your UI.
 ```
@@ -75,26 +82,27 @@ user settings, and browser policies may still prevent vibration.
 ### One Time
 
 ```kotlin
-VibratorManager.vibrate(3000)
-```
-
-`3000` means 3 seconds.
-
-You can also use Kotlin `Duration`:
-
-```kotlin
 import com.wonddak.vibrate
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
+VibratorManager.vibrate(3.seconds)
 VibratorManager.vibrate(300.milliseconds, strength = 0.5f)
 ```
 
 Durations are truncated to whole milliseconds. Infinite durations and values below 1 ms are ignored.
 
+`vibrate(Long)` and `vibrateSecond(Int)`, including their strength overloads,
+are deprecated with warnings in 1.2.0. Convert milliseconds with `.milliseconds`
+and seconds with `.seconds` before calling `vibrate()`.
+
 ### Strength
 
 ```kotlin
-VibratorManager.vibrate(3000, strength = 0.5f)
+import com.wonddak.vibrate
+import kotlin.time.Duration.Companion.seconds
+
+VibratorManager.vibrate(3.seconds, strength = 0.5f)
 VibratorManager.vibrate(
     VibrationPreset.Success,
     strength = 0.8f
@@ -109,18 +117,7 @@ VibratorManager.vibrate(
 
 ### Pattern
 
-```kotlin
-VibratorManager.vibratePattern(listOf(300, 500, 700, 500))
-```
-
-`[300, 500, 700, 500]` means:
-
-- wait `300ms`
-- vibrate `500ms`
-- wait `700ms`
-- vibrate `500ms`
-
-For new typed patterns, use `VibrationSegment`:
+Each `VibrationSegment` specifies a delay followed by a vibration:
 
 ```kotlin
 import com.wonddak.model.VibrationSegment
@@ -134,11 +131,10 @@ VibratorManager.vibrateSegments(
 )
 ```
 
-`VibratePattern` and the `vibratePattern(List<VibratePattern>)` overloads are
-deprecated with warnings in 1.2.0 and will be removed in a future release.
-To migrate, convert `vibrate` to `duration` and `delay` to `Duration` using
-`.milliseconds`, then call `vibrateSegments()`. To keep a shared strength,
-pass the same `strength` to every segment.
+`VibratePattern` and the numeric and typed `vibratePattern()` overloads are
+deprecated with warnings in 1.2.0. Convert each legacy `[delay, vibrate]` pair
+to a segment using `.milliseconds`, then call `vibrateSegments()`. To keep a
+shared strength, pass the same `strength` to every segment.
 
 ### Presets
 
@@ -197,7 +193,7 @@ VibratorManager.vibrateSegments(
 ```
 
 The repeat count is the total number of plays (1 to 100), and each play includes
-the initial delay. You can also pass `repeatCount` to the flat timing-list overload.
+the initial delay.
 Repeated patterns expand to at most 10,000 pulses. An invalid segment discards
 the request. Targets without amplitude control play the same timings at their
 default strength.

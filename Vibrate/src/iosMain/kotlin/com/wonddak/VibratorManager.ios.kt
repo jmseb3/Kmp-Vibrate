@@ -1,7 +1,16 @@
+@file:Suppress("DEPRECATION") // Keep the platform implementations callable by the legacy API.
+
 package com.wonddak
 
 import com.wonddak.internal.CustomHaptic
+import com.wonddak.internal.MILLISECONDS_IMPORT
 import com.wonddak.internal.Pulse
+import com.wonddak.internal.RAW_PATTERN_REPLACEMENT
+import com.wonddak.internal.RAW_PATTERN_STRENGTH_REPLACEMENT
+import com.wonddak.internal.USE_DURATION
+import com.wonddak.internal.USE_SEGMENTS
+import com.wonddak.internal.VIBRATE_DURATION_IMPORT
+import com.wonddak.internal.VIBRATION_SEGMENT_IMPORT
 import com.wonddak.internal.normalizeDurationMillis
 import com.wonddak.internal.normalizePatternTimings
 import com.wonddak.internal.normalizeStrength
@@ -52,16 +61,32 @@ actual object VibratorManager {
         UINotificationFeedbackGenerator().notificationOccurred(type)
     }
 
+    @Deprecated(
+        message = USE_DURATION,
+        replaceWith = ReplaceWith("vibrate(time.milliseconds)", VIBRATE_DURATION_IMPORT, MILLISECONDS_IMPORT)
+    )
     actual fun vibrate(time: Long) = vibrate(time, 1f)
 
+    @Deprecated(
+        message = USE_DURATION,
+        replaceWith = ReplaceWith("vibrate(time.milliseconds, strength)", VIBRATE_DURATION_IMPORT, MILLISECONDS_IMPORT)
+    )
     actual fun vibrate(time: Long, strength: Float) {
         val duration = normalizeDurationMillis(time) ?: return
         val intensity = normalizeStrength(strength) ?: return
         play(listOf(Pulse(0L, duration, intensity)))
     }
 
+    @Deprecated(
+        message = USE_SEGMENTS,
+        replaceWith = ReplaceWith(RAW_PATTERN_REPLACEMENT, VIBRATION_SEGMENT_IMPORT, MILLISECONDS_IMPORT)
+    )
     actual fun vibratePattern(timings: List<Long>) = vibratePattern(timings, 1f)
 
+    @Deprecated(
+        message = USE_SEGMENTS,
+        replaceWith = ReplaceWith(RAW_PATTERN_STRENGTH_REPLACEMENT, VIBRATION_SEGMENT_IMPORT, MILLISECONDS_IMPORT)
+    )
     actual fun vibratePattern(timings: List<Long>, strength: Float) {
         val validated = normalizePatternTimings(timings) ?: return
         val intensity = normalizeStrength(strength) ?: return

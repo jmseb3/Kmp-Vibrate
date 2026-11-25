@@ -1,7 +1,15 @@
 @file:OptIn(kotlin.js.ExperimentalWasmJsInterop::class)
+@file:Suppress("DEPRECATION") // Keep the platform implementations callable by the legacy API.
 
 package com.wonddak
 
+import com.wonddak.internal.MILLISECONDS_IMPORT
+import com.wonddak.internal.RAW_PATTERN_REPLACEMENT
+import com.wonddak.internal.RAW_PATTERN_STRENGTH_REPLACEMENT
+import com.wonddak.internal.USE_DURATION
+import com.wonddak.internal.USE_SEGMENTS
+import com.wonddak.internal.VIBRATE_DURATION_IMPORT
+import com.wonddak.internal.VIBRATION_SEGMENT_IMPORT
 import com.wonddak.internal.normalizePatternTimings
 import com.wonddak.internal.normalizeStrength
 import com.wonddak.internal.preparePulses
@@ -57,6 +65,10 @@ actual object VibratorManager {
         vibratePattern(pulses.toTimings())
     }
 
+    @Deprecated(
+        message = USE_DURATION,
+        replaceWith = ReplaceWith("vibrate(time.milliseconds)", VIBRATE_DURATION_IMPORT, MILLISECONDS_IMPORT)
+    )
     actual fun vibrate(time: Long) {
         if (time !in 1..Int.MAX_VALUE.toLong()) return
         if (isSupported()) {
@@ -65,12 +77,20 @@ actual object VibratorManager {
         }
     }
 
+    @Deprecated(
+        message = USE_DURATION,
+        replaceWith = ReplaceWith("vibrate(time.milliseconds, strength)", VIBRATE_DURATION_IMPORT, MILLISECONDS_IMPORT)
+    )
     actual fun vibrate(time: Long, strength: Float) {
         // The Web Vibration API does not expose amplitude, so strength is intentionally ignored.
         if (normalizeStrength(strength) == null) return
         vibrate(time)
     }
 
+    @Deprecated(
+        message = USE_SEGMENTS,
+        replaceWith = ReplaceWith(RAW_PATTERN_REPLACEMENT, VIBRATION_SEGMENT_IMPORT, MILLISECONDS_IMPORT)
+    )
     actual fun vibratePattern(timings: List<Long>) {
         if (!isSupported()) {
             return
@@ -99,6 +119,10 @@ actual object VibratorManager {
         }, delayFirst)
     }
 
+    @Deprecated(
+        message = USE_SEGMENTS,
+        replaceWith = ReplaceWith(RAW_PATTERN_STRENGTH_REPLACEMENT, VIBRATION_SEGMENT_IMPORT, MILLISECONDS_IMPORT)
+    )
     actual fun vibratePattern(timings: List<Long>, strength: Float) {
         // The Web Vibration API does not expose amplitude, so strength is intentionally ignored.
         if (normalizeStrength(strength) == null) return
