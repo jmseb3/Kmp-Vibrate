@@ -25,10 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.wonddak.VibratorManager
-import com.wonddak.vibrateSecond
+import com.wonddak.vibrate
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun singleVibrate(enabled: Boolean) {
+fun singleVibrate(enabled: Boolean, strength: Float) {
     SampleSection(
         title = "Single vibrate",
         subtitle = "Pick a duration in seconds and trigger a one-shot vibration."
@@ -78,7 +79,7 @@ fun singleVibrate(enabled: Boolean) {
 
             Button(
                 onClick = {
-                    VibratorManager.vibrateSecond(second)
+                    VibratorManager.vibrate(second.seconds, strength)
                 },
                 enabled = enabled
             ) {

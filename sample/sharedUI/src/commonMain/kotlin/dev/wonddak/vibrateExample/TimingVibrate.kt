@@ -19,7 +19,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +26,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -34,8 +36,9 @@ import com.wonddak.VibratorManager
 import com.wonddak.model.VibratePattern
 import com.wonddak.vibratePattern
 
+@Suppress("DEPRECATION")
 @Composable
-fun TimingVibrate(enabled: Boolean) {
+fun TimingVibrate(enabled: Boolean, strength: Float) {
     SampleSection(
         title = "Custom pattern",
         subtitle = "Pattern items are entered in milliseconds: delay first, then vibrate."
@@ -48,11 +51,6 @@ fun TimingVibrate(enabled: Boolean) {
                     VibratePattern(100, 500)
                 )
             )
-        }
-        val enableVibrateButton by remember {
-            derivedStateOf {
-                timing.isNotEmpty()
-            }
         }
         LazyColumn(
             modifier = Modifier
@@ -105,11 +103,10 @@ fun TimingVibrate(enabled: Boolean) {
         var vibrate by remember {
             mutableStateOf("")
         }
-        val enableAddButton by remember(delay, vibrate) {
-            derivedStateOf {
-                delay.isNotEmpty() && vibrate.isNotEmpty()
-            }
-        }
+        val delayMillis = delay.toLongOrNull()?.takeIf { it in 0L..Int.MAX_VALUE.toLong() }
+        val vibrateMillis = vibrate.toLongOrNull()?.takeIf { it in 1L..Int.MAX_VALUE.toLong() }
+        var repeats by remember { mutableStateOf("1") }
+        val repeatCount = repeats.toIntOrNull()?.takeIf { it in 1..100 }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -170,22 +167,38 @@ fun TimingVibrate(enabled: Boolean) {
                     // Replace the list instance so Compose observes the appended pattern item.
                     val temp = timing.toMutableList()
                     temp.add(
-                        VibratePattern(delay.toLong(), vibrate.toLong())
+                        VibratePattern(checkNotNull(delayMillis), checkNotNull(vibrateMillis))
                     )
                     timing = temp
                 },
-                enabled = enableAddButton
+                enabled = delayMillis != null && vibrateMillis != null && timing.size < 100
             ) {
                 Text("Add Vibrate Pattern")
             }
         }
 
+        OutlinedTextField(
+            value = repeats,
+            onValueChange = { repeats = it },
+            label = { Text("Repeat count (1-100)") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            isError = repeats.isNotEmpty() && repeatCount == null
+        )
+        PatternTimeline(timing)
+        if (timing.isNotEmpty() && repeatCount != null) {
+            val patternCode = timing.joinToString(",\n") { "    VibratePattern(${it.delay}, ${it.vibrate})" }
+            val code = "VibratorManager.vibratePattern(listOf(\n$patternCode\n), " +
+                "repeatCount = $repeatCount, strength = ${strength}f)"
+            val clipboard = LocalClipboardManager.current
+            SelectionContainer { Text(code) }
+            Button(onClick = { clipboard.setText(AnnotatedString(code)) }) { Text("Copy Kotlin code") }
+        }
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                VibratorManager.vibratePattern(timing)
+                VibratorManager.vibratePattern(timing, checkNotNull(repeatCount), strength)
             },
-            enabled = enableVibrateButton && enabled
+            enabled = timing.isNotEmpty() && repeatCount != null && enabled
         ) {
             Text("Vibrate Pattern")
         }
