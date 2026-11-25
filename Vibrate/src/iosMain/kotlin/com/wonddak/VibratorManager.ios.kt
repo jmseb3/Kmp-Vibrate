@@ -6,6 +6,7 @@ import com.wonddak.internal.normalizeDurationMillis
 import com.wonddak.internal.normalizePatternTimings
 import com.wonddak.internal.normalizeStrength
 import com.wonddak.internal.preparePulses
+import com.wonddak.model.VibrationSegment
 import platform.CoreHaptics.CHHapticEngine
 import platform.Foundation.NSThread
 import platform.UIKit.UIImpactFeedbackGenerator

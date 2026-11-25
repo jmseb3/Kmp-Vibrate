@@ -7,6 +7,7 @@ import com.wonddak.internal.normalizeDurationMillis
 import com.wonddak.internal.normalizePatternTimings
 import com.wonddak.internal.normalizeStrength
 import com.wonddak.model.VibratePattern
+import com.wonddak.model.VibrationSegment
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals

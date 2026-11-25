@@ -4,6 +4,7 @@ import com.wonddak.internal.normalizePatternTimings
 import com.wonddak.internal.normalizeStrength
 import com.wonddak.internal.preparePulses
 import com.wonddak.internal.toTimings
+import com.wonddak.model.VibrationSegment
 import kotlin.js.jsTypeOf
 import kotlinx.browser.window
 

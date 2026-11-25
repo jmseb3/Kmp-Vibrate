@@ -5,7 +5,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import com.wonddak.HapticFeedback
 import com.wonddak.VibrationPreset
-import com.wonddak.VibrationSegment
+import com.wonddak.model.VibrationSegment
 import com.wonddak.VibratorManager
 import com.wonddak.vibrate
 import dev.wonddak.vibrateExample.ui.SampleSection

@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import com.wonddak.VibratorManager
-import com.wonddak.VibrationSegment
+import com.wonddak.model.VibrationSegment
 import dev.wonddak.vibrateExample.ui.SampleSection
 import kotlin.time.Duration.Companion.milliseconds
 

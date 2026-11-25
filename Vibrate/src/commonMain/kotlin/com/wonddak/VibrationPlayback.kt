@@ -4,6 +4,7 @@ package com.wonddak
 
 import com.wonddak.internal.normalizePatternTimings
 import com.wonddak.model.VibratePattern
+import com.wonddak.model.VibrationSegment
 import kotlin.jvm.JvmName
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -32,7 +33,7 @@ fun VibratorManager.vibrate(preset: VibrationPreset, repeatCount: Int, strength:
         "run { val patterns = timings; val count = repeatCount; val segmentStrength = strength; " +
             "vibrateSegments(patterns.map { pattern -> VibrationSegment(duration = pattern.vibrate.milliseconds, " +
             "delay = pattern.delay.milliseconds, strength = segmentStrength) }, repeatCount = count) }",
-        "com.wonddak.VibrationSegment",
+        "com.wonddak.model.VibrationSegment",
         "kotlin.time.Duration.Companion.milliseconds"
     )
 )

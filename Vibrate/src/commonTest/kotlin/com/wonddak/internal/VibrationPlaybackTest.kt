@@ -1,6 +1,6 @@
 package com.wonddak.internal
 
-import com.wonddak.VibrationSegment
+import com.wonddak.model.VibrationSegment
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

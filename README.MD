@@ -123,7 +123,7 @@ VibratorManager.vibratePattern(listOf(300, 500, 700, 500))
 For new typed patterns, use `VibrationSegment`:
 
 ```kotlin
-import com.wonddak.VibrationSegment
+import com.wonddak.model.VibrationSegment
 import kotlin.time.Duration.Companion.milliseconds
 
 VibratorManager.vibrateSegments(
@@ -182,7 +182,7 @@ other events and on older versions. JS/Wasm use timing presets for all events.
 ### Repetition and Per-Segment Strength
 
 ```kotlin
-import com.wonddak.VibrationSegment
+import com.wonddak.model.VibrationSegment
 import com.wonddak.vibrate
 import kotlin.time.Duration.Companion.milliseconds
 

@@ -6,7 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
-import com.wonddak.VibrationSegment
+import com.wonddak.model.VibrationSegment
 
 @Suppress("DEPRECATION")
 @Composable
@@ -15,7 +15,7 @@ internal fun PatternCodeExport(timing: List<VibrationSegment>, repeatCount: Int,
         "    VibrationSegment(${it.duration.inWholeMilliseconds}.milliseconds, " +
             "delay = ${it.delay.inWholeMilliseconds}.milliseconds, strength = ${strength}f)"
     }
-    val code = "import com.wonddak.VibrationSegment\n" +
+    val code = "import com.wonddak.model.VibrationSegment\n" +
         "import com.wonddak.VibratorManager\n" +
         "import kotlin.time.Duration.Companion.milliseconds\n\n" +
         "VibratorManager.vibrateSegments(listOf(\n$patternCode\n), repeatCount = $repeatCount)"

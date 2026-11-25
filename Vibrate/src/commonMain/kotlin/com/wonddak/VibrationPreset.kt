@@ -3,6 +3,7 @@
 package com.wonddak
 
 import com.wonddak.model.VibratePattern
+import com.wonddak.model.VibrationSegment
 import kotlin.time.Duration.Companion.milliseconds
 
 enum class VibrationPreset(

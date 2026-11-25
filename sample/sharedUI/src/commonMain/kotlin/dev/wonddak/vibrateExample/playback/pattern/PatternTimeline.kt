@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.dp
-import com.wonddak.VibrationSegment
+import com.wonddak.model.VibrationSegment
 
 @Composable
 internal fun PatternTimeline(pattern: List<VibrationSegment>) {

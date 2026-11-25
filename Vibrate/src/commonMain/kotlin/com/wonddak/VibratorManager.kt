@@ -4,6 +4,7 @@ package com.wonddak
 
 import com.wonddak.internal.flattenPatternTimings
 import com.wonddak.model.VibratePattern
+import com.wonddak.model.VibrationSegment
 
 /**
  * Vibrator Manager
@@ -90,7 +91,7 @@ fun VibratorManager.vibrateSecond(second: Int, strength: Float) = vibrate(
     message = "Use vibrateSegments() with a list of VibrationSegment. This overload will be removed in a future release.",
     replaceWith = ReplaceWith(
         "vibrateSegments(timings.map { VibrationSegment(duration = it.vibrate.milliseconds, delay = it.delay.milliseconds) })",
-        "com.wonddak.VibrationSegment",
+        "com.wonddak.model.VibrationSegment",
         "kotlin.time.Duration.Companion.milliseconds"
     )
 )
@@ -107,7 +108,7 @@ fun VibratorManager.vibratePattern(timings: List<VibratePattern>) = vibratePatte
         "run { val patterns = timings; val segmentStrength = strength; " +
             "vibrateSegments(patterns.map { pattern -> VibrationSegment(duration = pattern.vibrate.milliseconds, " +
             "delay = pattern.delay.milliseconds, strength = segmentStrength) }) }",
-        "com.wonddak.VibrationSegment",
+        "com.wonddak.model.VibrationSegment",
         "kotlin.time.Duration.Companion.milliseconds"
     )
 )

@@ -1,4 +1,4 @@
-package com.wonddak
+package com.wonddak.model
 
 import kotlin.time.Duration
 

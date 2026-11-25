@@ -1,6 +1,6 @@
 package com.wonddak.internal
 
-import com.wonddak.VibrationSegment
+import com.wonddak.model.VibrationSegment
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
