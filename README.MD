@@ -53,6 +53,25 @@ if (VibratorManager.isSupported()) {
 }
 ```
 
+### Capabilities (Unreleased)
+
+```kotlin
+val capabilities = VibratorManager.capabilities()
+if (capabilities.isSupported) {
+    VibratorManager.vibrate(300)
+}
+// Use capabilities.supportsAmplitudeControl to enable strength controls in your UI.
+```
+
+- `isSupported` matches `VibratorManager.isSupported()`.
+- Android reports amplitude control only on API 26+ devices with hardware support.
+- iOS reports amplitude control when Core Haptics is supported.
+- JS/Wasm always report amplitude control as unsupported.
+
+These values describe available features, not guaranteed playback. On the web,
+support only means the browser exposes the Vibration API; hardware, user activation,
+user settings, and browser policies may still prevent vibration.
+
 ### One Time
 
 ```kotlin

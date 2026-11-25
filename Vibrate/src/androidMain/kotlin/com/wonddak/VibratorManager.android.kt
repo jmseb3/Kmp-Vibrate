@@ -39,6 +39,15 @@ actual object VibratorManager {
         return vibratorOrNull() != null
     }
 
+    actual fun capabilities(): VibrationCapabilities {
+        val currentVibrator = vibratorOrNull()
+        return VibrationCapabilities(
+            isSupported = currentVibrator != null,
+            supportsAmplitudeControl = currentVibrator != null &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && currentVibrator.hasAmplitudeControl()
+        )
+    }
+
     /**
      * make vibrate for [time] second
      *

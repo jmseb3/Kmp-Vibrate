@@ -4,9 +4,20 @@ import com.wonddak.model.VibratePattern
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
 
 class VibratorManagerValidationTest {
+
+    @Test
+    fun capabilitiesMatchSupportAndDoNotAdvertiseStrengthOnUnsupportedTargets() {
+        val capabilities = VibratorManager.capabilities()
+
+        assertEquals(VibratorManager.isSupported(), capabilities.isSupported)
+        if (!capabilities.isSupported) {
+            assertFalse(capabilities.supportsAmplitudeControl)
+        }
+    }
 
     @Test
     fun normalizeDurationRejectsNonPositiveValues() {

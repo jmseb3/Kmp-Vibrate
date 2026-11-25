@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Added `VibratorManager.capabilities()` to query vibration and amplitude-control support.
+- Added capability details to the shared sample app.
+
 ## 1.1.0
 
 - Added configurable vibration strength to the shared API.

@@ -34,6 +34,14 @@ actual object VibratorManager {
         }.getOrDefault(false)
     }
 
+    actual fun capabilities(): VibrationCapabilities {
+        val supported = isSupported()
+        return VibrationCapabilities(
+            isSupported = supported,
+            supportsAmplitudeControl = supported
+        )
+    }
+
     /**
      * make vibrate for [time] second
      *

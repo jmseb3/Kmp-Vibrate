@@ -39,6 +39,11 @@ actual object VibratorManager {
         return checkVibrateSupport() == "true"
     }
 
+    actual fun capabilities(): VibrationCapabilities = VibrationCapabilities(
+        isSupported = isSupported(),
+        supportsAmplitudeControl = false
+    )
+
     actual fun vibrate(time: Long) {
         val safeDuration = normalizeDurationMillis(time) ?: return
         if (isSupported()) {

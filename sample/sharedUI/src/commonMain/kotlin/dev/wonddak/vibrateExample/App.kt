@@ -21,7 +21,8 @@ import com.wonddak.VibratorManager
 @Composable
 fun App() {
     // Drive the entire sample from one support check so every section stays in sync per platform.
-    val supported = VibratorManager.isSupported()
+    val capabilities = VibratorManager.capabilities()
+    val supported = capabilities.isSupported
 
     Column(
         modifier = Modifier
@@ -45,9 +46,16 @@ fun App() {
 
         SampleSection(
             title = "Device support",
-            subtitle = "This status comes from `VibratorManager.isSupported()`."
+            subtitle = "Available features do not guarantee playback; device settings and browser policies still apply."
         ) {
             SupportBanner(supported = supported)
+            Text(
+                if (capabilities.supportsAmplitudeControl) {
+                    "Strength control: supported"
+                } else {
+                    "Strength control: unsupported"
+                }
+            )
         }
 
         VibrationPresetSection(enabled = supported)

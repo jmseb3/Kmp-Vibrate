@@ -63,7 +63,7 @@ fun SupportBanner(supported: Boolean) {
     val accentColor = if (supported) Color(0xFF1E8E3E) else Color(0xFFC62828)
     val statusText = if (supported) "Supported" else "Unsupported"
     val detailText = if (supported) {
-        "This target can vibrate and play haptic patterns."
+        "This target exposes vibration support."
     } else {
         "This target does not expose vibration support."
     }

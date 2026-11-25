@@ -13,6 +13,12 @@ expect object VibratorManager {
     fun isSupported(): Boolean
 
     /**
+     * Returns current vibration support and strength-control capabilities without playing feedback.
+     * This does not guarantee playback; user settings and platform policies still apply.
+     */
+    fun capabilities(): VibrationCapabilities
+
+    /**
      * make vibrate for [time] second
      *
      * - 3000 = 3 Second

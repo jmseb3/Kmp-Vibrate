@@ -16,6 +16,11 @@ actual object VibratorManager {
         return window.navigator.asDynamic().vibrate != undefined
     }
 
+    actual fun capabilities(): VibrationCapabilities = VibrationCapabilities(
+        isSupported = isSupported(),
+        supportsAmplitudeControl = false
+    )
+
     actual fun vibrate(time: Long) {
         val safeDuration = normalizeDurationMillis(time) ?: return
         if (isSupported()) {
