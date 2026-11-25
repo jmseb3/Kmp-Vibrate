@@ -12,7 +12,7 @@ In `lib.versions.toml`  include this dependency version catalog
 
 ```toml
 [versions]
-vibrate = "1.1.0"
+vibrate = "1.2.0"
 
 [libraries]
 vibrate = { module = "io.github.jmseb3:vibrate", version.ref = "vibrate" }
@@ -28,7 +28,7 @@ or In `build.gradle` of app module, include this dependency
 
 ```gradle
 commonMain.dependencies {
-    implementation("io.github.jmseb3:vibrate:1.1.0")
+    implementation("io.github.jmseb3:vibrate:1.2.0")
 }
 ```
 
@@ -53,7 +53,7 @@ if (VibratorManager.isSupported()) {
 }
 ```
 
-### Capabilities (Unreleased)
+### Capabilities
 
 ```kotlin
 val capabilities = VibratorManager.capabilities()
@@ -80,6 +80,17 @@ VibratorManager.vibrate(3000)
 
 `3000` means 3 seconds.
 
+You can also use Kotlin `Duration`:
+
+```kotlin
+import com.wonddak.vibrate
+import kotlin.time.Duration.Companion.milliseconds
+
+VibratorManager.vibrate(300.milliseconds, strength = 0.5f)
+```
+
+Durations are truncated to whole milliseconds. Infinite durations and values below 1 ms are ignored.
+
 ### Strength
 
 ```kotlin
@@ -90,11 +101,11 @@ VibratorManager.vibrate(
 )
 ```
 
-`strength` uses a normalized `0f..1f` range.
+`strength` uses a normalized `0f..1f` range. Zero, negative, and NaN values do not start playback.
 
 - Android maps it to vibration amplitude.
 - iOS maps it to Core Haptics intensity.
-- JS/Wasm currently ignore it because the browser vibration API only supports timing patterns.
+- JS/Wasm use the browser's default strength for valid positive values.
 
 ### Pattern
 
@@ -146,6 +157,46 @@ If you want to inspect or customize a preset, you can also read its pattern list
 val successPattern = VibrationPreset.Success.patterns
 val successDuration = VibrationPreset.Success.durationMillis
 ```
+
+### UI Feedback
+
+```kotlin
+VibratorManager.feedback(HapticFeedback.SelectionChanged)
+VibratorManager.feedback(HapticFeedback.Click)
+VibratorManager.feedback(HapticFeedback.Success)
+```
+
+iOS uses UIKit selection, impact, and notification feedback. Android 29+ uses
+system effects for selection and click. Android uses timing presets for the
+other events and on older versions. JS/Wasm use timing presets for all events.
+
+### Repetition and Per-Segment Strength
+
+```kotlin
+import com.wonddak.VibrationSegment
+import com.wonddak.vibrate
+import kotlin.time.Duration.Companion.milliseconds
+
+VibratorManager.vibrate(VibrationPreset.Success, repeatCount = 3)
+VibratorManager.vibrateSegments(
+    listOf(
+        VibrationSegment(60.milliseconds, strength = 0.3f),
+        VibrationSegment(90.milliseconds, strength = 1f, delay = 80.milliseconds)
+    ),
+    repeatCount = 2
+)
+```
+
+The repeat count is the total number of plays (1 to 100), and each play includes
+the initial delay. You can also pass `repeatCount` to either pattern-list overload.
+Repeated patterns expand to at most 10,000 pulses. An invalid segment discards
+the request. Targets without amplitude control play the same timings at their
+default strength.
+
+Core Haptics caps each vibration pulse at 30 seconds. Web timing values greater
+than `Int.MAX_VALUE` milliseconds are ignored, and browsers may shorten or truncate
+valid patterns. `stopVibrate()` cancels pattern playback, including a pending web
+delay. UIKit feedback consists of short system effects without a stop control.
 
 ### Stop
 
